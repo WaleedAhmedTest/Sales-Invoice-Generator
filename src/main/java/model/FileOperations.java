@@ -15,14 +15,16 @@ public class FileOperations {
         Hashtable<Integer,ArrayList<InvoiceLine>>hashtable = new Hashtable<>();
         Scanner invoiceLineScanner = new Scanner(new File("src/main/resources/InvoiceLine.csv"));
         invoiceLineScanner.next("invoiceNum,itemName,itemPrice,Count");
-        invoiceLineScanner.useDelimiter(",|\n\r|\n");
+        invoiceLineScanner.useDelimiter("[,\n]");
         while (invoiceLineScanner.hasNext()){
             String invoiceNum = invoiceLineScanner.next().replace("\r", "");
+            while (invoiceNum.equals(""))
+                invoiceNum = invoiceLineScanner.next().replace("\r", "");
             String itemName = invoiceLineScanner.next().replace("\r", "");
             String itemPrice = invoiceLineScanner.next().replace("\r", "");
             String count = invoiceLineScanner.next().replace("\r", "");
             InvoiceLine invoiceLine = new InvoiceLine(invoiceNum,itemName,itemPrice,count);
-            if (hashtable.contains(Integer.parseInt(invoiceNum)))
+            if (hashtable.containsKey(Integer.parseInt(invoiceNum)))
                 hashtable.get(Integer.parseInt(invoiceNum)).add(invoiceLine);
             else{
                 ArrayList<InvoiceLine> newList = new ArrayList<>();
@@ -35,13 +37,18 @@ public class FileOperations {
         // Reading all invoice headers
         Scanner invoiceHeaderScanner = new Scanner(new File("src/main/resources/InvoiceHeader.csv"));
         invoiceHeaderScanner.next("invoiceNum,invoiceDate,CustomerName");
-        invoiceHeaderScanner.useDelimiter(",");
+        invoiceHeaderScanner.useDelimiter("[,\n]");
         while (invoiceHeaderScanner.hasNext()) {
-            String invoiceNum = invoiceHeaderScanner.next().replaceAll("([\\r\\n])", "");
-            String invoiceDate = invoiceHeaderScanner.next().replaceAll("([\\r\\n])", "");
-            String customerName = invoiceHeaderScanner.next().replaceAll("([\\r\\n])", "");
+            String invoiceNum = invoiceHeaderScanner.next().replace("\r", "");
+            while (invoiceNum.equals(""))
+                invoiceNum = invoiceHeaderScanner.next().replace("\r", "");
+            String invoiceDate = invoiceHeaderScanner.next().replace("\r", "");
+            String customerName = invoiceHeaderScanner.next().replace("\r", "");
             InvoiceHeader invoiceHeader = new InvoiceHeader(invoiceNum,invoiceDate,customerName);
-            invoiceHeader.setInvoiceLines(hashtable.get(Integer.parseInt(invoiceNum)));
+            if (hashtable.containsKey(Integer.parseInt(invoiceNum)))
+                invoiceHeader.setInvoiceLines(hashtable.get(Integer.parseInt(invoiceNum)));
+            else
+                invoiceHeader.setInvoiceLines(new ArrayList<>());
             data.add(invoiceHeader);
         }
         invoiceHeaderScanner.close();

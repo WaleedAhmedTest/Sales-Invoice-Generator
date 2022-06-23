@@ -11,7 +11,8 @@ class FileOperationsTest {
     void readFile() throws FileNotFoundException {
         FileOperations fileOperations = new FileOperations();
         ArrayList<InvoiceHeader> invoiceHeaders = fileOperations.readFile();
-        System.out.println("BOOM");
+        for (InvoiceHeader invoiceHeader : invoiceHeaders)
+            System.out.println(invoiceHeader);
     }
 
     @org.junit.jupiter.api.Test

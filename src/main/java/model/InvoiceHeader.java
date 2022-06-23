@@ -17,4 +17,14 @@ public class InvoiceHeader {
     public void setInvoiceLines(ArrayList<InvoiceLine> invoiceLines) {
         this.invoiceLines = invoiceLines;
     }
+
+    @Override
+    public String toString() {
+        return "InvoiceHeader{" +
+                "invoiceNum='" + invoiceNum + '\'' +
+                ", invoiceDate='" + invoiceDate + '\'' +
+                ", customerName='" + customerName + '\'' +
+                ", invoiceLines=" + invoiceLines +
+                '}';
+    }
 }
