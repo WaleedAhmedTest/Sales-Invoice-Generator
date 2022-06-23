@@ -3,9 +3,10 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class GUI extends JFrame implements ActionListener {
+public class GUI extends JFrame {
+    private JButton saveButton;
+    private JButton cancelButton;
 
     // GUI constructor
     public GUI() {
@@ -28,6 +29,7 @@ public class GUI extends JFrame implements ActionListener {
         this.add(rightPanel);
     }
 
+    // Function which creates and returns the left panel
     private JPanel createLeftPanel() {
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(null);
@@ -35,6 +37,7 @@ public class GUI extends JFrame implements ActionListener {
         return leftPanel;
     }
 
+    // Function which creates and returns the right panel
     private JPanel createRightPanel() {
 
         // Creating labels
@@ -55,16 +58,18 @@ public class GUI extends JFrame implements ActionListener {
         label3.setBounds(20,80,200,20);
 
         // Creating buttons
-        JButton saveButton = new JButton();
+        saveButton = new JButton();
         saveButton.setBounds(150,400,80,40);
         saveButton.setText("Save");
         saveButton.setFocusable(false);
+        saveButton.addActionListener(e -> save(e));
 
         // Creating buttons
-        JButton cancelButton = new JButton();
+        cancelButton = new JButton();
         cancelButton.setBounds(250,400,80,40);
         cancelButton.setText("Cancel");
         cancelButton.setFocusable(false);
+        cancelButton.addActionListener(e -> cancel(e));
 
         JPanel rightPanel = new JPanel();
         rightPanel.setBounds(500, 0, 500, 500);
@@ -79,8 +84,13 @@ public class GUI extends JFrame implements ActionListener {
         return rightPanel;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
+    // Save function which is called when clicking the Save button
+    private void save(ActionEvent e){
+        //TODO
+    }
 
+    // Cancel function which is called when clicking the Cancel button
+    private void cancel(ActionEvent e){
+        //TODO
     }
 }
