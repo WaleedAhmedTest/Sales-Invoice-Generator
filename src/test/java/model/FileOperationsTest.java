@@ -3,8 +3,6 @@ package model;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class FileOperationsTest {
 
     @org.junit.jupiter.api.Test
@@ -17,5 +15,6 @@ class FileOperationsTest {
 
     @org.junit.jupiter.api.Test
     void writeFile() {
+
     }
 }

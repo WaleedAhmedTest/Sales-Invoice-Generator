@@ -3,9 +3,7 @@ package view;
 import controller.Controller;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class GUI extends JFrame {
 
@@ -13,7 +11,7 @@ public class GUI extends JFrame {
     Controller controller;
 
     // GUI constructor
-    public GUI() throws FileNotFoundException {
+    public GUI() throws IOException {
 
         // Initializing the controller
         controller = new Controller();
@@ -45,7 +43,7 @@ public class GUI extends JFrame {
     }
 
     // Function which creates and returns the right panel
-    private JPanel createRightPanel() {
+    private JPanel createRightPanel() throws IOException {
 
         // Creating labels
         JLabel label0 = new JLabel();

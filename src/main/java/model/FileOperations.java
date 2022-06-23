@@ -2,18 +2,31 @@ package model;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Scanner;
 
 public class FileOperations {
 
+    private final String INVOICE_LINE_PATH;
+    private final String INVOICE_HEADER_PATH;
+
+    // Initializing the FileOperations
+    public FileOperations() {
+        INVOICE_LINE_PATH = "src/main/resources/InvoiceLine.csv";
+        INVOICE_HEADER_PATH = "src/main/resources/InvoiceHeader.csv";
+
+    }
+
+    // Function which reads all invoices
     public ArrayList<InvoiceHeader> readFile() throws FileNotFoundException {
         ArrayList<InvoiceHeader> data = new ArrayList<>();
 
         // Reading all invoice lines
         Hashtable<Integer,ArrayList<InvoiceLine>>hashtable = new Hashtable<>();
-        Scanner invoiceLineScanner = new Scanner(new File("src/main/resources/InvoiceLine.csv"));
+        Scanner invoiceLineScanner = new Scanner(new File(INVOICE_LINE_PATH));
         invoiceLineScanner.next("invoiceNum,itemName,itemPrice,Count");
         invoiceLineScanner.useDelimiter("[,\n]");
         while (invoiceLineScanner.hasNext()){
@@ -35,7 +48,7 @@ public class FileOperations {
         invoiceLineScanner.close();
 
         // Reading all invoice headers
-        Scanner invoiceHeaderScanner = new Scanner(new File("src/main/resources/InvoiceHeader.csv"));
+        Scanner invoiceHeaderScanner = new Scanner(new File(INVOICE_HEADER_PATH));
         invoiceHeaderScanner.next("invoiceNum,invoiceDate,CustomerName");
         invoiceHeaderScanner.useDelimiter("[,\n]");
         while (invoiceHeaderScanner.hasNext()) {
@@ -55,7 +68,40 @@ public class FileOperations {
         return data;
     }
 
+    // Function which writes all invoices
     public void writeFile(ArrayList<InvoiceHeader> data){
-        //TODO
+
+
+        FileWriter invoiceLineWriter = null;
+        FileWriter invoiceHeaderWriter = null;
+        try {
+            // Initializing writers
+            invoiceLineWriter = new FileWriter(INVOICE_LINE_PATH);
+            invoiceHeaderWriter = new FileWriter(INVOICE_HEADER_PATH);
+            invoiceLineWriter.write("invoiceNum,itemName,itemPrice,Count\n");
+            invoiceHeaderWriter.write("invoiceNum,invoiceDate,CustomerName\n");
+
+            for (InvoiceHeader invoiceHeader : data){
+                // Writing invoice headers
+                invoiceHeaderWriter.write(invoiceHeader.getInvoiceNum() + "," + invoiceHeader.getInvoiceDate()
+                + "," + invoiceHeader.getCustomerName() + "\n");
+
+                // Writing invoice lines
+                for (InvoiceLine invoiceLine : invoiceHeader.getInvoiceLines()){
+                    invoiceLineWriter.write(
+                            invoiceLine.getInvoiceNum() + "," + invoiceLine.getItemName() + ","
+                                    + invoiceLine.getItemPrice() + "," + invoiceLine.getCount() + "\n"
+                    );
+                }
+            }
+
+            // Closing writers
+            invoiceLineWriter.close();
+            invoiceHeaderWriter.close();
+
+        } catch (Exception e) {
+            System.err.println(e);
+            System.exit(-1);
+        }
     }
 }

@@ -3,10 +3,10 @@ package model;
 import java.util.ArrayList;
 
 public class InvoiceHeader {
-    String invoiceNum;
-    String invoiceDate;
-    String customerName;
-    ArrayList<InvoiceLine> invoiceLines;
+    private String invoiceNum;
+    private String invoiceDate;
+    private String customerName;
+    private ArrayList<InvoiceLine> invoiceLines;
 
     public InvoiceHeader(String invoiceNum, String invoiceDate, String customerName) {
         this.invoiceNum = invoiceNum;
@@ -16,6 +16,34 @@ public class InvoiceHeader {
 
     public void setInvoiceLines(ArrayList<InvoiceLine> invoiceLines) {
         this.invoiceLines = invoiceLines;
+    }
+
+    public String getInvoiceNum() {
+        return invoiceNum;
+    }
+
+    public void setInvoiceNum(String invoiceNum) {
+        this.invoiceNum = invoiceNum;
+    }
+
+    public String getInvoiceDate() {
+        return invoiceDate;
+    }
+
+    public void setInvoiceDate(String invoiceDate) {
+        this.invoiceDate = invoiceDate;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public ArrayList<InvoiceLine> getInvoiceLines() {
+        return invoiceLines;
     }
 
     @Override

@@ -5,6 +5,7 @@ import model.InvoiceHeader;
 
 import java.awt.event.ActionEvent;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Controller {
