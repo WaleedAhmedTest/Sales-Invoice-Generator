@@ -18,7 +18,7 @@ public class GUI extends JFrame {
         this.setResizable(false);
         this.setSize(1000, 500);
         this.setTitle("Sales Invoice Generator");
-        ImageIcon image = new ImageIcon("src/main/java/frontend/logo.png");
+        ImageIcon image = new ImageIcon("src/main/java/view/logo.png");
         this.setIconImage(image.getImage());
         this.setResizable(false);
         this.setVisible(true);
