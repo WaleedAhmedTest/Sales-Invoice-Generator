@@ -5,8 +5,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class GUI extends JFrame {
-    private JButton saveButton;
-    private JButton cancelButton;
 
     // GUI constructor
     public GUI() {
@@ -58,18 +56,18 @@ public class GUI extends JFrame {
         label3.setBounds(20,80,200,20);
 
         // Creating buttons
-        saveButton = new JButton();
+        JButton saveButton = new JButton();
         saveButton.setBounds(150,400,80,40);
         saveButton.setText("Save");
         saveButton.setFocusable(false);
-        saveButton.addActionListener(e -> save(e));
+        saveButton.addActionListener(this::save);
 
         // Creating buttons
-        cancelButton = new JButton();
+        JButton cancelButton = new JButton();
         cancelButton.setBounds(250,400,80,40);
         cancelButton.setText("Cancel");
         cancelButton.setFocusable(false);
-        cancelButton.addActionListener(e -> cancel(e));
+        cancelButton.addActionListener(this::cancel);
 
         JPanel rightPanel = new JPanel();
         rightPanel.setBounds(500, 0, 500, 500);
