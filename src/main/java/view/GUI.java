@@ -1,13 +1,22 @@
 package view;
 
+import controller.Controller;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.FileNotFoundException;
 
 public class GUI extends JFrame {
 
+    // Controller reference
+    Controller controller;
+
     // GUI constructor
-    public GUI() {
+    public GUI() throws FileNotFoundException {
+
+        // Initializing the controller
+        controller = new Controller();
 
         // Creating the panels
         JPanel leftPanel = createLeftPanel();
@@ -41,18 +50,18 @@ public class GUI extends JFrame {
         // Creating labels
         JLabel label0 = new JLabel();
         label0.setBounds(20,20,200,20);
-        label0.setText("Invoice Number : 23");
+        label0.setText("Invoice Number : ");
 
         JLabel label1 = new JLabel();
-        label1.setText("Invoice Date ");
+        label1.setText("Invoice Date :");
         label1.setBounds(20,40,200,20);
 
         JLabel label2 = new JLabel();
-        label2.setText("Customer Name ");
+        label2.setText("Customer Name : ");
         label2.setBounds(20,60,200,20);
 
         JLabel label3 = new JLabel();
-        label3.setText("Invoice Total :     350.50");
+        label3.setText("Invoice Total : ");
         label3.setBounds(20,80,200,20);
 
         // Creating buttons
@@ -60,14 +69,14 @@ public class GUI extends JFrame {
         saveButton.setBounds(150,400,80,40);
         saveButton.setText("Save");
         saveButton.setFocusable(false);
-        saveButton.addActionListener(this::save);
+        saveButton.addActionListener(controller::save);
 
         // Creating buttons
         JButton cancelButton = new JButton();
         cancelButton.setBounds(250,400,80,40);
         cancelButton.setText("Cancel");
         cancelButton.setFocusable(false);
-        cancelButton.addActionListener(this::cancel);
+        cancelButton.addActionListener(controller::cancel);
 
         JPanel rightPanel = new JPanel();
         rightPanel.setBounds(500, 0, 500, 500);
@@ -78,17 +87,6 @@ public class GUI extends JFrame {
         rightPanel.add(label3);
         rightPanel.add(saveButton);
         rightPanel.add(cancelButton);
-        rightPanel.setBackground(Color.GREEN);
         return rightPanel;
-    }
-
-    // Save function which is called when clicking the Save button
-    private void save(ActionEvent e){
-        //TODO
-    }
-
-    // Cancel function which is called when clicking the Cancel button
-    private void cancel(ActionEvent e){
-        //TODO
     }
 }
