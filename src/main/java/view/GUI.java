@@ -43,7 +43,7 @@ public class GUI extends JFrame {
     }
 
     // Function which creates and returns the right panel
-    private JPanel createRightPanel() throws IOException {
+    private JPanel createRightPanel() {
 
         // Creating labels
         JLabel label0 = new JLabel();
