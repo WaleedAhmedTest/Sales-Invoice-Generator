@@ -7,6 +7,7 @@ import view.GUI;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionEvent;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Controller {
@@ -16,20 +17,17 @@ public class Controller {
     private FileOperations fileOperations;
     private GUI gui;
 
-    public ArrayList<InvoiceHeader> getData() {
-        return data;
-    }
-
     // Initializing the controller
-    public Controller(GUI gui) throws FileNotFoundException {
+    public Controller() {
+        this.gui = new GUI(this);
         fileOperations = new FileOperations();
-        this.gui = gui;
-        data = fileOperations.readFile();
+        loadFile(null);
     }
 
     // Function which loads the data
-    public void loadFile(ActionEvent e){
-        //TODO
+    public void loadFile(ActionEvent e) {
+        data = fileOperations.readFile();
+        gui.updateTables(data);
         System.out.println("Load file");
     }
 

@@ -19,11 +19,20 @@ public class FileOperations {
     }
 
     // Function which reads all invoices
-    public ArrayList<InvoiceHeader> readFile() throws FileNotFoundException {
+    public ArrayList<InvoiceHeader> readFile() {
         ArrayList<InvoiceHeader> data = new ArrayList<>();
+        // Initializing scanners
+        Scanner invoiceLineScanner = null;
+        Scanner invoiceHeaderScanner = null;
+        try{
+            invoiceLineScanner = new Scanner(new File(INVOICE_LINE_PATH));
+            invoiceHeaderScanner = new Scanner(new File(INVOICE_HEADER_PATH));
+        }catch (FileNotFoundException e){
+            System.err.println("[ERROR] Input files are missing...");
+            System.exit(-1);
+        }
         // Reading all invoice lines
         Hashtable<Integer,ArrayList<InvoiceLine>>hashtable = new Hashtable<>();
-        Scanner invoiceLineScanner = new Scanner(new File(INVOICE_LINE_PATH));
         invoiceLineScanner.nextLine();
         while (invoiceLineScanner.hasNextLine()){
             String[] line = invoiceLineScanner.nextLine().split(",");
@@ -41,7 +50,6 @@ public class FileOperations {
         invoiceLineScanner.close();
 
         // Reading all invoice headers
-        Scanner invoiceHeaderScanner = new Scanner(new File(INVOICE_HEADER_PATH));
         invoiceHeaderScanner.nextLine();
         while (invoiceHeaderScanner.hasNextLine()) {
             String[] line = invoiceHeaderScanner.nextLine().split(",");
@@ -82,12 +90,11 @@ public class FileOperations {
                     );
                 }
             }
-
             // Closing writers
             invoiceLineWriter.close();
             invoiceHeaderWriter.close();
         } catch (Exception e) {
-            System.err.println(e);
+            System.err.println("[ERROR] Output files path is corrupted...");
             System.exit(-1);
         }
     }

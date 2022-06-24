@@ -2,26 +2,24 @@ package view;
 
 import controller.Controller;
 import model.InvoiceHeader;
-import model.InvoiceLine;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class GUI extends JFrame {
 
     // GUI attributes
-    private Controller controller;
+    private final Controller controller;
     private JTable leftTable,rightTable;
     private JLabel invoiceLabel,invoiceTotal;
     private JTextField dateTextField,customerTextField;
 
     // GUI constructor
-    public GUI() throws IOException {
+    public GUI(Controller controller) {
 
         // Initializing the controller
-        controller = new Controller(this);
+        this.controller = controller;
 
         // Creating the panels
         JPanel leftPanel = createLeftPanel();
@@ -52,9 +50,6 @@ public class GUI extends JFrame {
         this.setJMenuBar(menuBar);
         this.add(leftPanel);
         this.add(rightPanel);
-
-        // Initializing the tables
-        updateTables(controller.getData());
     }
 
     // Function which creates and returns the left panel
@@ -70,6 +65,7 @@ public class GUI extends JFrame {
         leftTable = new JTable(new DefaultTableModel(columns,0));
         leftTable.getTableHeader().setReorderingAllowed(false);
         leftTable.getTableHeader().setResizingAllowed(false);
+        leftTable.setShowGrid(true);
         leftTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         leftTable.getSelectionModel().addListSelectionListener(event -> {
             if (event.getValueIsAdjusting())
@@ -146,12 +142,7 @@ public class GUI extends JFrame {
 
         // Creating Table
         String[] columns = {"No.","Item Name","Item Price","Count","Item Total"};
-        String[][] data = {
-                {"1","PS","100","15","45"},
-                {"2","PPS","102","12","345"},
-                {"3","P_PPS","103","17","145"}
-        };
-        rightTable = new JTable(data,columns);
+        rightTable = new JTable(new DefaultTableModel(columns,0));
         rightTable.getTableHeader().setReorderingAllowed(false);
         rightTable.getTableHeader().setResizingAllowed(false);
         rightTable.setShowGrid(true);
@@ -191,10 +182,15 @@ public class GUI extends JFrame {
     }
 
     public void updateTables(ArrayList<InvoiceHeader> data){
+
+        // Adjusting the left table
         DefaultTableModel leftModel = (DefaultTableModel) leftTable.getModel();
+        leftModel.setRowCount(0);
         for (InvoiceHeader invoiceHeader : data){
             leftModel.addRow(new String[]{invoiceHeader.getInvoiceNum(), invoiceHeader.getInvoiceDate()
             , invoiceHeader.getCustomerName(), "1000"});
         }
+
+
     }
 }
