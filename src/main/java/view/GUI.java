@@ -3,6 +3,8 @@ package view;
 import controller.Controller;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.io.IOException;
 
 public class GUI extends JFrame {
@@ -49,9 +51,42 @@ public class GUI extends JFrame {
 
     // Function which creates and returns the left panel
     private JPanel createLeftPanel() {
+
+        // Adding table
+        String[] columns = {"No.","Date","Customer","Total"};
+        String[][] data = {
+                {"1","PS","100","15"},
+                {"2","PPS","102","12"},
+                {"3","P_PPS","103","17"}
+        };
+        JTable table = new JTable(data,columns);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.getTableHeader().setResizingAllowed(false);
+        table.setShowGrid(true);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(10,5,490,385);
+
+
+        // Adding buttons
+        JButton createNewInvoiceButton = new JButton();
+        createNewInvoiceButton.setBounds(80,400,150,30);
+        createNewInvoiceButton.setText("Create New Invoice");
+        createNewInvoiceButton.setFocusable(false);
+        createNewInvoiceButton.addActionListener(controller::saveNewInvoice);
+
+        JButton deleteInvoiceButton = new JButton();
+        deleteInvoiceButton.setBounds(250,400,150,30);
+        deleteInvoiceButton.setText("Delete Invoice");
+        deleteInvoiceButton.setFocusable(false);
+        deleteInvoiceButton.addActionListener(controller::deleteInvoice);
+
+        // Setting left panel
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(null);
         leftPanel.setBounds(0, 0, 500, 500);
+        leftPanel.add(scrollPane);
+        leftPanel.add(createNewInvoiceButton);
+        leftPanel.add(deleteInvoiceButton);
         return leftPanel;
     }
 

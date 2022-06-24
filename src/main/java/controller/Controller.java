@@ -42,4 +42,16 @@ public class Controller {
         //TODO
         System.out.println("Save instance");
     }
+
+    // Function which saves newInvoice
+    public void saveNewInvoice(ActionEvent e){
+        //TODO
+        System.out.println("Save new invoice");
+    }
+
+    // Function which saves newInvoice
+    public void deleteInvoice(ActionEvent e){
+        //TODO
+        System.out.println("Delete invoice");
+    }
 }
