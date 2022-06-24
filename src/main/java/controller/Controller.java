@@ -20,15 +20,26 @@ public class Controller {
     }
 
     // Function which loads the data
-    public void loadFile(ActionEvent e){}
+    public void loadFile(ActionEvent e){
+        //TODO
+        System.out.println("Load file");
+    }
 
     // Save function which is called when clicking the Save button
     public void saveFile(ActionEvent e){
-        fileOperations.writeFile(data);
+        //TODO
+        System.out.println("Save file");
     }
 
     // Cancel function which is called when clicking the Cancel button
-    public void cancel(ActionEvent e){
+    public void cancelInstance(ActionEvent e){
         //TODO
+        System.out.println("Cancel instance");
+    }
+
+    // Function which save the new instance (Called when save button is pressed)
+    public void saveInstance(ActionEvent e){
+        //TODO
+        System.out.println("Save instance");
     }
 }
