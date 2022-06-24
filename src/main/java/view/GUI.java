@@ -2,17 +2,18 @@ package view;
 
 import controller.Controller;
 import model.InvoiceHeader;
+import model.InvoiceLine;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
+import java.util.Hashtable;
 
-public class GUI extends JFrame {
+public class GUI extends JFrame{
 
     // GUI attributes
     private final Controller controller;
     private JTable leftTable,rightTable;
-    private JLabel invoiceLabel,invoiceTotal;
+    private JLabel invoiceNumLabel, invoiceTotalLabel;
     private JTextField dateTextField,customerTextField;
 
     // GUI constructor
@@ -29,9 +30,9 @@ public class GUI extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileBar = new JMenu("File");
         JMenuItem loadMenuItem = new JMenuItem("Load File");
-        loadMenuItem.addActionListener(controller::loadFile);
+        loadMenuItem.addActionListener(e -> controller.loadFile());
         JMenuItem saveMenuItem = new JMenuItem("Save File");
-        saveMenuItem.addActionListener(controller::saveFile);
+        saveMenuItem.addActionListener(e -> controller.saveFile());
         fileBar.add(loadMenuItem);
         fileBar.add(saveMenuItem);
         menuBar.add(fileBar);
@@ -69,7 +70,7 @@ public class GUI extends JFrame {
         leftTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         leftTable.getSelectionModel().addListSelectionListener(event -> {
             if (event.getValueIsAdjusting())
-                System.out.println(leftTable.getValueAt(leftTable.getSelectedRow(), 0).toString());
+                controller.showInvoice(leftTable.getValueAt(leftTable.getSelectedRow(), 0).toString());
         });
         leftTable.setShowGrid(true);
         leftTable.setDefaultEditor(Object.class, null);
@@ -109,9 +110,9 @@ public class GUI extends JFrame {
         label0.setBounds(40,0,200,20);
         label0.setText("Invoice Number : ");
 
-        invoiceLabel = new JLabel();
-        invoiceLabel.setBounds(150,0,200,20);
-        invoiceLabel.setText("Test");
+        invoiceNumLabel = new JLabel();
+        invoiceNumLabel.setBounds(150,0,200,20);
+        invoiceNumLabel.setText("");
 
         JLabel label1 = new JLabel();
         label1.setText("Invoice Date :");
@@ -125,9 +126,9 @@ public class GUI extends JFrame {
         label3.setText("Invoice Total : ");
         label3.setBounds(40,60,200,20);
 
-        invoiceTotal = new JLabel();
-        invoiceTotal.setBounds(150,60,200,20);
-        invoiceTotal.setText("Test");
+        invoiceTotalLabel = new JLabel();
+        invoiceTotalLabel.setBounds(150,60,200,20);
+        invoiceTotalLabel.setText("");
 
         JLabel label4 = new JLabel();
         label4.setText("Invoice Items");
@@ -167,13 +168,13 @@ public class GUI extends JFrame {
         rightPanel.setBounds(500, 0, 500, 500);
         rightPanel.setLayout(null);
         rightPanel.add(label0);
-        rightPanel.add(invoiceLabel);
+        rightPanel.add(invoiceNumLabel);
         rightPanel.add(label1);
         rightPanel.add(dateTextField);
         rightPanel.add(label2);
         rightPanel.add(customerTextField);
         rightPanel.add(label3);
-        rightPanel.add(invoiceTotal);
+        rightPanel.add(invoiceTotalLabel);
         rightPanel.add(label4);
         rightPanel.add(saveButton);
         rightPanel.add(cancelButton);
@@ -181,16 +182,40 @@ public class GUI extends JFrame {
         return rightPanel;
     }
 
-    public void updateTables(ArrayList<InvoiceHeader> data){
-
+    // This function initializes the Frame by showing the invoices and clearing the right panel data
+    public void initializeFrame(Hashtable<Integer,InvoiceHeader> data){
         // Adjusting the left table
         DefaultTableModel leftModel = (DefaultTableModel) leftTable.getModel();
         leftModel.setRowCount(0);
-        for (InvoiceHeader invoiceHeader : data){
+        for (InvoiceHeader invoiceHeader : data.values()){
             leftModel.addRow(new String[]{invoiceHeader.getInvoiceNum(), invoiceHeader.getInvoiceDate()
-            , invoiceHeader.getCustomerName(), "1000"});
+            , invoiceHeader.getCustomerName(), ""+controller.calculateTotalCost(invoiceHeader)});
         }
+        clearRightPanel();
+    }
 
+    // This function is used to update the right table with the given invoice lines list
+    public void updateRightTable(InvoiceHeader invoiceHeader){
+        clearRightPanel();
+        invoiceNumLabel.setText(invoiceHeader.getInvoiceNum());
+        invoiceTotalLabel.setText(""+controller.calculateTotalCost(invoiceHeader));
+        dateTextField.setText(invoiceHeader.getInvoiceDate());
+        customerTextField.setText(invoiceHeader.getCustomerName());
+        DefaultTableModel rightModel = (DefaultTableModel) rightTable.getModel();
+        for (InvoiceLine invoiceLine : invoiceHeader.getInvoiceLines()){
+            rightModel.addRow(new String[]{invoiceHeader.getInvoiceNum(), invoiceLine.getItemName()
+                    , invoiceLine.getItemPrice(), invoiceLine.getCount(), "" +
+                    (Double.parseDouble(invoiceLine.getCount()) * Double.parseDouble(invoiceLine.getItemPrice()))});
+        }
+    }
 
+    // This function clears the right panel data
+    private void clearRightPanel(){
+        DefaultTableModel rightModel = (DefaultTableModel) rightTable.getModel();
+        rightModel.setRowCount(0);
+        invoiceNumLabel.setText("");
+        invoiceTotalLabel.setText("");
+        dateTextField.setText("");
+        customerTextField.setText("");
     }
 }

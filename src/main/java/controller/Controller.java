@@ -2,67 +2,70 @@ package controller;
 
 import model.FileOperations;
 import model.InvoiceHeader;
+import model.InvoiceLine;
 import view.GUI;
 
-import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionEvent;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 public class Controller {
 
     // Array data which contains all the invoices and details
-    private ArrayList<InvoiceHeader> data;
-    private FileOperations fileOperations;
-    private GUI gui;
+    private Hashtable<Integer,InvoiceHeader> data;
+    private final FileOperations fileOperations;
+    private final GUI gui;
 
     // Initializing the controller
     public Controller() {
         this.gui = new GUI(this);
-        fileOperations = new FileOperations();
-        loadFile(null);
+        this.fileOperations = new FileOperations();
+        loadFile();
     }
 
     // Function which loads the data
-    public void loadFile(ActionEvent e) {
+    public void loadFile() {
         data = fileOperations.readFile();
-        gui.updateTables(data);
-        System.out.println("Load file");
+        gui.initializeFrame(data);
     }
 
     // Save function which is called when clicking the Save button
-    public void saveFile(ActionEvent e){
-        //TODO
-        System.out.println("Save file");
+    public void saveFile(){
+        fileOperations.writeFile(data);
     }
 
     // Cancel function which is called when clicking the Cancel button
     public void cancelInstance(ActionEvent e){
         //TODO
-        System.out.println("Cancel instance");
     }
 
     // Function which save the new instance (Called when save button is pressed)
     public void saveInstance(ActionEvent e){
         //TODO
-        System.out.println("Save instance");
     }
 
     // Function which saves newInvoice
     public void saveNewInvoice(ActionEvent e){
         //TODO
-        System.out.println("Save new invoice");
     }
 
     // Function which saves newInvoice
     public void deleteInvoice(ActionEvent e){
         //TODO
-        System.out.println("Delete invoice");
     }
 
     // Function which shows a certain invoice
-    public void showInvoice(ListSelectionEvent e){
-        System.out.println(e.getFirstIndex());
+    public void showInvoice(String invNum){
+        gui.updateRightTable(data.get(Integer.parseInt(invNum)));
+    }
+
+    // Function returns the total price of an invoice
+    public double calculateTotalCost(InvoiceHeader invoiceHeader){
+        double result = 0;
+        for (InvoiceLine invoiceLine : invoiceHeader.getInvoiceLines()){
+            result += Double.parseDouble(invoiceLine.getCount()) *
+                    Double.parseDouble(invoiceLine.getItemPrice());
+        }
+        return result;
     }
 }

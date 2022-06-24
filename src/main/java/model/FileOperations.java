@@ -19,8 +19,8 @@ public class FileOperations {
     }
 
     // Function which reads all invoices
-    public ArrayList<InvoiceHeader> readFile() {
-        ArrayList<InvoiceHeader> data = new ArrayList<>();
+    public Hashtable<Integer,InvoiceHeader> readFile() {
+        Hashtable<Integer,InvoiceHeader> data = new Hashtable<>();
         // Initializing scanners
         Scanner invoiceLineScanner = null;
         Scanner invoiceHeaderScanner = null;
@@ -60,14 +60,14 @@ public class FileOperations {
                 invoiceHeader.setInvoiceLines(hashtable.get(Integer.parseInt(line[0])));
             else
                 invoiceHeader.setInvoiceLines(new ArrayList<>());
-            data.add(invoiceHeader);
+            data.put(Integer.parseInt(line[0]),invoiceHeader);
         }
         invoiceHeaderScanner.close();
         return data;
     }
 
     // Function which writes all invoices
-    public void writeFile(ArrayList<InvoiceHeader> data){
+    public void writeFile(Hashtable<Integer,InvoiceHeader> data){
         FileWriter invoiceLineWriter;
         FileWriter invoiceHeaderWriter;
         try {
@@ -77,7 +77,7 @@ public class FileOperations {
             invoiceLineWriter.write("invoiceNum,itemName,itemPrice,Count\n");
             invoiceHeaderWriter.write("invoiceNum,invoiceDate,CustomerName\n");
 
-            for (InvoiceHeader invoiceHeader : data){
+            for (InvoiceHeader invoiceHeader : data.values()){
                 // Writing invoice headers
                 invoiceHeaderWriter.write(invoiceHeader.getInvoiceNum() + "," + invoiceHeader.getInvoiceDate()
                 + "," + invoiceHeader.getCustomerName() + "\n");
