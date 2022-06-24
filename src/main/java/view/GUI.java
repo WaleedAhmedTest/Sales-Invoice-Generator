@@ -3,8 +3,6 @@ package view;
 import controller.Controller;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import java.awt.*;
 import java.io.IOException;
 
 public class GUI extends JFrame {
@@ -105,6 +103,10 @@ public class GUI extends JFrame {
         label0.setBounds(40,0,200,20);
         label0.setText("Invoice Number : ");
 
+        JLabel invoiceLabel = new JLabel();
+        invoiceLabel.setBounds(150,0,200,20);
+        invoiceLabel.setText("Test");
+
         JLabel label1 = new JLabel();
         label1.setText("Invoice Date :");
         label1.setBounds(40,20,200,20);
@@ -117,11 +119,22 @@ public class GUI extends JFrame {
         label3.setText("Invoice Total : ");
         label3.setBounds(40,60,200,20);
 
+        JLabel invoiceTotal = new JLabel();
+        invoiceTotal.setBounds(150,60,200,20);
+        invoiceTotal.setText("Test");
+
         JLabel label4 = new JLabel();
         label4.setText("Invoice Items");
         label4.setBounds(20,80,200,20);
 
-        // Adding Table
+        // Creating text fields
+        JTextField dateTextField = new JTextField();
+        dateTextField.setBounds(150,20,200,20);
+
+        JTextField customerTextField = new JTextField();
+        customerTextField.setBounds(150,40,200,20);
+
+        // Creating Table
         String[] columns = {"No.","Item Name","Item Price","Count","Item Total"};
         String[][] data = {
                 {"1","PS","100","15","45"},
@@ -153,9 +166,13 @@ public class GUI extends JFrame {
         rightPanel.setBounds(500, 0, 500, 500);
         rightPanel.setLayout(null);
         rightPanel.add(label0);
+        rightPanel.add(invoiceLabel);
         rightPanel.add(label1);
+        rightPanel.add(dateTextField);
         rightPanel.add(label2);
+        rightPanel.add(customerTextField);
         rightPanel.add(label3);
+        rightPanel.add(invoiceTotal);
         rightPanel.add(label4);
         rightPanel.add(saveButton);
         rightPanel.add(cancelButton);
