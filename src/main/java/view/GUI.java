@@ -20,16 +20,29 @@ public class GUI extends JFrame {
         JPanel leftPanel = createLeftPanel();
         JPanel rightPanel = createRightPanel();
 
-        //Creating the frame
+        // Creating the menu
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileBar = new JMenu("File");
+        JMenuItem loadMenuItem = new JMenuItem("Load File");
+        loadMenuItem.addActionListener(controller::loadFile);
+        JMenuItem saveMenuItem = new JMenuItem("Save File");
+        saveMenuItem.addActionListener(controller::saveFile);
+        fileBar.add(loadMenuItem);
+        fileBar.add(saveMenuItem);
+        menuBar.add(fileBar);
+
+        // Setting the frame
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setSize(1000, 500);
         this.setTitle("Sales Invoice Generator");
         ImageIcon image = new ImageIcon("src/main/java/view/logo.png");
         this.setIconImage(image.getImage());
+        this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setVisible(true);
         this.setLayout(null);
+        this.setJMenuBar(menuBar);
         this.add(leftPanel);
         this.add(rightPanel);
     }
@@ -67,7 +80,7 @@ public class GUI extends JFrame {
         saveButton.setBounds(150,400,80,40);
         saveButton.setText("Save");
         saveButton.setFocusable(false);
-        saveButton.addActionListener(controller::save);
+        //saveButton.addActionListener(controller::save);
 
         // Creating buttons
         JButton cancelButton = new JButton();

@@ -19,8 +19,11 @@ public class Controller {
         data = fileOperations.readFile();
     }
 
+    // Function which loads the data
+    public void loadFile(ActionEvent e){}
+
     // Save function which is called when clicking the Save button
-    public void save(ActionEvent e){
+    public void saveFile(ActionEvent e){
         fileOperations.writeFile(data);
     }
 
