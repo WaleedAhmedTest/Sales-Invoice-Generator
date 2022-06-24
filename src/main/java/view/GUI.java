@@ -52,6 +52,11 @@ public class GUI extends JFrame {
     // Function which creates and returns the left panel
     private JPanel createLeftPanel() {
 
+        // Creating labels
+        JLabel label0 = new JLabel();
+        label0.setBounds(10,5,200,20);
+        label0.setText("Invoices Table ");
+
         // Adding table
         String[] columns = {"No.","Date","Customer","Total"};
         String[][] data = {
@@ -63,8 +68,9 @@ public class GUI extends JFrame {
         table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(false);
         table.setShowGrid(true);
+        table.setDefaultEditor(Object.class, null);
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(10,5,490,385);
+        scrollPane.setBounds(20,30,480,360);
 
 
         // Adding buttons
@@ -84,6 +90,7 @@ public class GUI extends JFrame {
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(null);
         leftPanel.setBounds(0, 0, 500, 500);
+        leftPanel.add(label0);
         leftPanel.add(scrollPane);
         leftPanel.add(createNewInvoiceButton);
         leftPanel.add(deleteInvoiceButton);
@@ -95,20 +102,38 @@ public class GUI extends JFrame {
 
         // Creating labels
         JLabel label0 = new JLabel();
-        label0.setBounds(20,0,200,20);
+        label0.setBounds(40,0,200,20);
         label0.setText("Invoice Number : ");
 
         JLabel label1 = new JLabel();
         label1.setText("Invoice Date :");
-        label1.setBounds(20,20,200,20);
+        label1.setBounds(40,20,200,20);
 
         JLabel label2 = new JLabel();
         label2.setText("Customer Name : ");
-        label2.setBounds(20,40,200,20);
+        label2.setBounds(40,40,200,20);
 
         JLabel label3 = new JLabel();
         label3.setText("Invoice Total : ");
-        label3.setBounds(20,60,200,20);
+        label3.setBounds(40,60,200,20);
+
+        JLabel label4 = new JLabel();
+        label4.setText("Invoice Items");
+        label4.setBounds(20,80,200,20);
+
+        // Adding Table
+        String[] columns = {"No.","Item Name","Item Price","Count","Item Total"};
+        String[][] data = {
+                {"1","PS","100","15","45"},
+                {"2","PPS","102","12","345"},
+                {"3","P_PPS","103","17","145"}
+        };
+        JTable table = new JTable(data,columns);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.getTableHeader().setResizingAllowed(false);
+        table.setShowGrid(true);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(20,105,450,285);
 
         // Creating buttons
         JButton saveButton = new JButton();
@@ -123,21 +148,6 @@ public class GUI extends JFrame {
         cancelButton.setFocusable(false);
         cancelButton.addActionListener(controller::cancelInstance);
 
-        // Adding Table
-        String[] columns = {"No.","Item Name","Item Price","Count","Item Total"};
-        String[][] data = {
-                {"1","PS","100","15","45"},
-                {"2","PPS","102","12","345"},
-                {"3","P_PPS","103","17","145"}
-        };
-        JTable table = new JTable(data,columns);
-        table.getTableHeader().setReorderingAllowed(false);
-        table.getTableHeader().setResizingAllowed(false);
-        table.setShowGrid(true);
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(20,90,450,300);
-
-
         // Setting right panel
         JPanel rightPanel = new JPanel();
         rightPanel.setBounds(500, 0, 500, 500);
@@ -146,6 +156,7 @@ public class GUI extends JFrame {
         rightPanel.add(label1);
         rightPanel.add(label2);
         rightPanel.add(label3);
+        rightPanel.add(label4);
         rightPanel.add(saveButton);
         rightPanel.add(cancelButton);
         rightPanel.add(scrollPane);
