@@ -1,20 +1,27 @@
 package view;
 
 import controller.Controller;
+import model.InvoiceHeader;
+import model.InvoiceLine;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class GUI extends JFrame {
 
-    // Controller reference
-    Controller controller;
+    // GUI attributes
+    private Controller controller;
+    private JTable leftTable,rightTable;
+    private JLabel invoiceLabel,invoiceTotal;
+    private JTextField dateTextField,customerTextField;
 
     // GUI constructor
     public GUI() throws IOException {
 
         // Initializing the controller
-        controller = new Controller();
+        controller = new Controller(this);
 
         // Creating the panels
         JPanel leftPanel = createLeftPanel();
@@ -45,6 +52,9 @@ public class GUI extends JFrame {
         this.setJMenuBar(menuBar);
         this.add(leftPanel);
         this.add(rightPanel);
+
+        // Initializing the tables
+        updateTables(controller.getData());
     }
 
     // Function which creates and returns the left panel
@@ -57,17 +67,17 @@ public class GUI extends JFrame {
 
         // Adding table
         String[] columns = {"No.","Date","Customer","Total"};
-        String[][] data = {
-                {"1","PS","100","15"},
-                {"2","PPS","102","12"},
-                {"3","P_PPS","103","17"}
-        };
-        JTable table = new JTable(data,columns);
-        table.getTableHeader().setReorderingAllowed(false);
-        table.getTableHeader().setResizingAllowed(false);
-        table.setShowGrid(true);
-        table.setDefaultEditor(Object.class, null);
-        JScrollPane scrollPane = new JScrollPane(table);
+        leftTable = new JTable(new DefaultTableModel(columns,0));
+        leftTable.getTableHeader().setReorderingAllowed(false);
+        leftTable.getTableHeader().setResizingAllowed(false);
+        leftTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        leftTable.getSelectionModel().addListSelectionListener(event -> {
+            if (event.getValueIsAdjusting())
+                System.out.println(leftTable.getValueAt(leftTable.getSelectedRow(), 0).toString());
+        });
+        leftTable.setShowGrid(true);
+        leftTable.setDefaultEditor(Object.class, null);
+        JScrollPane scrollPane = new JScrollPane(leftTable);
         scrollPane.setBounds(20,30,480,360);
 
 
@@ -103,7 +113,7 @@ public class GUI extends JFrame {
         label0.setBounds(40,0,200,20);
         label0.setText("Invoice Number : ");
 
-        JLabel invoiceLabel = new JLabel();
+        invoiceLabel = new JLabel();
         invoiceLabel.setBounds(150,0,200,20);
         invoiceLabel.setText("Test");
 
@@ -119,7 +129,7 @@ public class GUI extends JFrame {
         label3.setText("Invoice Total : ");
         label3.setBounds(40,60,200,20);
 
-        JLabel invoiceTotal = new JLabel();
+        invoiceTotal = new JLabel();
         invoiceTotal.setBounds(150,60,200,20);
         invoiceTotal.setText("Test");
 
@@ -128,10 +138,10 @@ public class GUI extends JFrame {
         label4.setBounds(20,80,200,20);
 
         // Creating text fields
-        JTextField dateTextField = new JTextField();
+        dateTextField = new JTextField();
         dateTextField.setBounds(150,20,200,20);
 
-        JTextField customerTextField = new JTextField();
+        customerTextField = new JTextField();
         customerTextField.setBounds(150,40,200,20);
 
         // Creating Table
@@ -141,11 +151,11 @@ public class GUI extends JFrame {
                 {"2","PPS","102","12","345"},
                 {"3","P_PPS","103","17","145"}
         };
-        JTable table = new JTable(data,columns);
-        table.getTableHeader().setReorderingAllowed(false);
-        table.getTableHeader().setResizingAllowed(false);
-        table.setShowGrid(true);
-        JScrollPane scrollPane = new JScrollPane(table);
+        rightTable = new JTable(data,columns);
+        rightTable.getTableHeader().setReorderingAllowed(false);
+        rightTable.getTableHeader().setResizingAllowed(false);
+        rightTable.setShowGrid(true);
+        JScrollPane scrollPane = new JScrollPane(rightTable);
         scrollPane.setBounds(20,105,450,285);
 
         // Creating buttons
@@ -178,5 +188,13 @@ public class GUI extends JFrame {
         rightPanel.add(cancelButton);
         rightPanel.add(scrollPane);
         return rightPanel;
+    }
+
+    public void updateTables(ArrayList<InvoiceHeader> data){
+        DefaultTableModel leftModel = (DefaultTableModel) leftTable.getModel();
+        for (InvoiceHeader invoiceHeader : data){
+            leftModel.addRow(new String[]{invoiceHeader.getInvoiceNum(), invoiceHeader.getInvoiceDate()
+            , invoiceHeader.getCustomerName(), "1000"});
+        }
     }
 }

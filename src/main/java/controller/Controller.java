@@ -2,7 +2,9 @@ package controller;
 
 import model.FileOperations;
 import model.InvoiceHeader;
+import view.GUI;
 
+import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionEvent;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -10,12 +12,18 @@ import java.util.ArrayList;
 public class Controller {
 
     // Array data which contains all the invoices and details
-    ArrayList<InvoiceHeader> data;
-    FileOperations fileOperations;
+    private ArrayList<InvoiceHeader> data;
+    private FileOperations fileOperations;
+    private GUI gui;
+
+    public ArrayList<InvoiceHeader> getData() {
+        return data;
+    }
 
     // Initializing the controller
-    public Controller() throws FileNotFoundException {
+    public Controller(GUI gui) throws FileNotFoundException {
         fileOperations = new FileOperations();
+        this.gui = gui;
         data = fileOperations.readFile();
     }
 
@@ -53,5 +61,10 @@ public class Controller {
     public void deleteInvoice(ActionEvent e){
         //TODO
         System.out.println("Delete invoice");
+    }
+
+    // Function which shows a certain invoice
+    public void showInvoice(ListSelectionEvent e){
+        System.out.println(e.getFirstIndex());
     }
 }

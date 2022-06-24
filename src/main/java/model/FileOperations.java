@@ -3,7 +3,6 @@ package model;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Scanner;
@@ -17,49 +16,40 @@ public class FileOperations {
     public FileOperations() {
         INVOICE_LINE_PATH = "src/main/resources/InvoiceLine.csv";
         INVOICE_HEADER_PATH = "src/main/resources/InvoiceHeader.csv";
-
     }
 
     // Function which reads all invoices
     public ArrayList<InvoiceHeader> readFile() throws FileNotFoundException {
         ArrayList<InvoiceHeader> data = new ArrayList<>();
-
         // Reading all invoice lines
         Hashtable<Integer,ArrayList<InvoiceLine>>hashtable = new Hashtable<>();
         Scanner invoiceLineScanner = new Scanner(new File(INVOICE_LINE_PATH));
-        invoiceLineScanner.next("invoiceNum,itemName,itemPrice,Count");
-        invoiceLineScanner.useDelimiter("[,\n]");
-        while (invoiceLineScanner.hasNext()){
-            String invoiceNum = invoiceLineScanner.next().replace("\r", "");
-            while (invoiceNum.equals(""))
-                invoiceNum = invoiceLineScanner.next().replace("\r", "");
-            String itemName = invoiceLineScanner.next().replace("\r", "");
-            String itemPrice = invoiceLineScanner.next().replace("\r", "");
-            String count = invoiceLineScanner.next().replace("\r", "");
-            InvoiceLine invoiceLine = new InvoiceLine(invoiceNum,itemName,itemPrice,count);
-            if (hashtable.containsKey(Integer.parseInt(invoiceNum)))
-                hashtable.get(Integer.parseInt(invoiceNum)).add(invoiceLine);
+        invoiceLineScanner.nextLine();
+        while (invoiceLineScanner.hasNextLine()){
+            String[] line = invoiceLineScanner.nextLine().split(",");
+            if(line.length!=4)
+                break;
+            InvoiceLine invoiceLine = new InvoiceLine(line[0],line[1],line[2],line[3]);
+            if (hashtable.containsKey(Integer.parseInt(line[0])))
+                hashtable.get(Integer.parseInt(line[0])).add(invoiceLine);
             else{
                 ArrayList<InvoiceLine> newList = new ArrayList<>();
                 newList.add(invoiceLine);
-                hashtable.put(Integer.parseInt(invoiceNum),newList);
+                hashtable.put(Integer.parseInt(line[0]),newList);
             }
         }
         invoiceLineScanner.close();
 
         // Reading all invoice headers
         Scanner invoiceHeaderScanner = new Scanner(new File(INVOICE_HEADER_PATH));
-        invoiceHeaderScanner.next("invoiceNum,invoiceDate,CustomerName");
-        invoiceHeaderScanner.useDelimiter("[,\n]");
-        while (invoiceHeaderScanner.hasNext()) {
-            String invoiceNum = invoiceHeaderScanner.next().replace("\r", "");
-            while (invoiceNum.equals(""))
-                invoiceNum = invoiceHeaderScanner.next().replace("\r", "");
-            String invoiceDate = invoiceHeaderScanner.next().replace("\r", "");
-            String customerName = invoiceHeaderScanner.next().replace("\r", "");
-            InvoiceHeader invoiceHeader = new InvoiceHeader(invoiceNum,invoiceDate,customerName);
-            if (hashtable.containsKey(Integer.parseInt(invoiceNum)))
-                invoiceHeader.setInvoiceLines(hashtable.get(Integer.parseInt(invoiceNum)));
+        invoiceHeaderScanner.nextLine();
+        while (invoiceHeaderScanner.hasNextLine()) {
+            String[] line = invoiceHeaderScanner.nextLine().split(",");
+            if(line.length!=3)
+                break;
+            InvoiceHeader invoiceHeader = new InvoiceHeader(line[0],line[1],line[2]);
+            if (hashtable.containsKey(Integer.parseInt(line[0])))
+                invoiceHeader.setInvoiceLines(hashtable.get(Integer.parseInt(line[0])));
             else
                 invoiceHeader.setInvoiceLines(new ArrayList<>());
             data.add(invoiceHeader);
@@ -70,10 +60,8 @@ public class FileOperations {
 
     // Function which writes all invoices
     public void writeFile(ArrayList<InvoiceHeader> data){
-
-
-        FileWriter invoiceLineWriter = null;
-        FileWriter invoiceHeaderWriter = null;
+        FileWriter invoiceLineWriter;
+        FileWriter invoiceHeaderWriter;
         try {
             // Initializing writers
             invoiceLineWriter = new FileWriter(INVOICE_LINE_PATH);
@@ -98,7 +86,6 @@ public class FileOperations {
             // Closing writers
             invoiceLineWriter.close();
             invoiceHeaderWriter.close();
-
         } catch (Exception e) {
             System.err.println(e);
             System.exit(-1);
