@@ -49,8 +49,9 @@ public class Controller {
     }
 
     // Function which saves newInvoice
-    public void deleteInvoice(ActionEvent e){
-        //TODO
+    public void deleteInvoice(String invNum){
+        data.remove(Integer.parseInt(invNum));
+        gui.initializeFrame(data);
     }
 
     // Function which shows a certain invoice

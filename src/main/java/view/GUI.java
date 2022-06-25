@@ -92,7 +92,7 @@ public class GUI extends JFrame{
         deleteInvoiceButton.setBounds(250,400,150,30);
         deleteInvoiceButton.setText("Delete Invoice");
         deleteInvoiceButton.setFocusable(false);
-        deleteInvoiceButton.addActionListener(controller::deleteInvoice);
+        deleteInvoiceButton.addActionListener(e-> controller.deleteInvoice(invoiceNumLabel.getText()));
 
         // Setting left panel
         JPanel leftPanel = new JPanel();
@@ -162,11 +162,12 @@ public class GUI extends JFrame{
             DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
             InvoiceHeader invoiceHeader = new InvoiceHeader(invoiceNumLabel.getText(),
                     dateTextField.getText(),customerTextField.getText());
-            Vector<Vector> vector = model.getDataVector();
+            Vector<?> vector = model.getDataVector();
             ArrayList<InvoiceLine> invoiceLines = new ArrayList<>();
-            for (Vector<String> row : vector){
-                invoiceLines.add(new InvoiceLine(row.get(0),
-                        row.get(1),row.get(2),row.get(3)));
+            for (Object obj : vector){
+                List<?> row = (List<?>) obj;
+                invoiceLines.add(new InvoiceLine((String) row.get(0),
+                        (String) row.get(1),(String) row.get(2),(String) row.get(3)));
             }
             invoiceHeader.setInvoiceLines(invoiceLines);
             controller.saveInstance(invoiceHeader);
