@@ -6,7 +6,10 @@ import model.InvoiceLine;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
 
 public class GUI extends JFrame{
 
@@ -155,13 +158,25 @@ public class GUI extends JFrame{
         saveButton.setBounds(150,400,80,30);
         saveButton.setText("Save");
         saveButton.setFocusable(false);
-        saveButton.addActionListener(controller::saveInstance);
+        saveButton.addActionListener(e -> {
+            DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
+            InvoiceHeader invoiceHeader = new InvoiceHeader(invoiceNumLabel.getText(),
+                    dateTextField.getText(),customerTextField.getText());
+            Vector<Vector> vector = model.getDataVector();
+            ArrayList<InvoiceLine> invoiceLines = new ArrayList<>();
+            for (Vector<String> row : vector){
+                invoiceLines.add(new InvoiceLine(row.get(0),
+                        row.get(1),row.get(2),row.get(3)));
+            }
+            invoiceHeader.setInvoiceLines(invoiceLines);
+            controller.saveInstance(invoiceHeader);
+        });
 
         JButton cancelButton = new JButton();
         cancelButton.setBounds(250,400,80,30);
         cancelButton.setText("Cancel");
         cancelButton.setFocusable(false);
-        cancelButton.addActionListener(controller::cancelInstance);
+        cancelButton.addActionListener(e -> controller.cancelInstance(invoiceNumLabel.getText()));
 
         // Setting right panel
         JPanel rightPanel = new JPanel();

@@ -6,7 +6,6 @@ import model.InvoiceLine;
 import view.GUI;
 
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class Controller {
@@ -35,13 +34,13 @@ public class Controller {
     }
 
     // Cancel function which is called when clicking the Cancel button
-    public void cancelInstance(ActionEvent e){
-        //TODO
+    public void cancelInstance(String invNum){
+        gui.updateRightTable(data.get(Integer.parseInt(invNum)));
     }
 
     // Function which save the new instance (Called when save button is pressed)
-    public void saveInstance(ActionEvent e){
-        //TODO
+    public void saveInstance(InvoiceHeader invoiceHeader){
+        data.put(Integer.parseInt(invoiceHeader.getInvoiceNum()),invoiceHeader);
     }
 
     // Function which saves newInvoice
