@@ -8,10 +8,7 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 public class GUI extends JFrame{
 
@@ -154,10 +151,9 @@ public class GUI extends JFrame{
                 return column == 0 || column == 1 || column == 2 || column == 3;
             }
         };
-        rightTable.getModel().addTableModelListener(new TableModelListener() {
-            public void tableChanged(TableModelEvent e) {
-                System.out.println("Table has changed");
-            }
+        rightTable.getSelectionModel().addListSelectionListener(event -> {
+            if (event.getValueIsAdjusting())
+                updateTotalCost();
         });
         rightTable.putClientProperty("terminateEditOnFocusLost", true);
         rightTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -172,27 +168,16 @@ public class GUI extends JFrame{
         saveButton.setBounds(150,400,80,30);
         saveButton.setText("Save");
         saveButton.setFocusable(false);
-        saveButton.addActionListener(e -> {
-            DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
-            InvoiceHeader invoiceHeader = new InvoiceHeader(invoiceNumLabel.getText(),
-                    dateTextField.getText(),customerTextField.getText());
-            Vector<?> vector = model.getDataVector();
-            ArrayList<InvoiceLine> invoiceLines = new ArrayList<>();
-            for (Object obj : vector){
-                List<?> row = (List<?>) obj;
-                invoiceLines.add(new InvoiceLine((String) row.get(0),
-                        (String) row.get(1),(String) row.get(2),(String) row.get(3)));
-            }
-            invoiceHeader.setInvoiceLines(invoiceLines);
-            controller.saveInstance(invoiceHeader);
-        });
+        saveButton.addActionListener(e -> saveInvoice());
 
         JButton cancelButton = new JButton();
         cancelButton.setBounds(250,400,80,30);
         cancelButton.setText("Cancel");
         cancelButton.setFocusable(false);
-        cancelButton.addActionListener(e -> controller.cancelInstance(invoiceNumLabel.getText()));
-
+        cancelButton.addActionListener(e -> {
+            if (!invoiceNumLabel.getText().equals(""))
+                controller.cancelInstance(invoiceNumLabel.getText());}
+        );
         // Setting right panel
         JPanel rightPanel = new JPanel();
         rightPanel.setBounds(500, 0, 500, 500);
@@ -258,5 +243,33 @@ public class GUI extends JFrame{
         customerTextField.setText("");
     }
 
+    // This function is used to save new invoice
+    private void saveInvoice(){
+        DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
+        InvoiceHeader invoiceHeader = new InvoiceHeader(invoiceNumLabel.getText(),
+                dateTextField.getText(),customerTextField.getText());
+        Vector<?> vector = model.getDataVector();
+        ArrayList<InvoiceLine> invoiceLines = new ArrayList<>();
+        for (Object obj : vector){
+            List<?> row = (List<?>) obj;
+            invoiceLines.add(new InvoiceLine((String) row.get(0),
+                    (String) row.get(1),(String) row.get(2),(String) row.get(3)));
+        }
+        invoiceHeader.setInvoiceLines(invoiceLines);
+        controller.saveInstance(invoiceHeader);
+    }
+
     // This function updates the right panel total costs when values are changed
+    private void updateTotalCost(){
+        DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
+        Vector<?> vector = model.getDataVector();
+        double sum = 0;
+        for (int i = 0 ; i < vector.size() ; i++){
+            List<?> row = (List<?>) vector.get(i);
+            double updatedValue = Double.parseDouble(row.get(2) + "") * Double.parseDouble(row.get(3)+"");
+            model.setValueAt("" + updatedValue , i, 4);
+            sum+=updatedValue;
+        }
+        invoiceTotalLabel.setText("" + sum);
+    }
 }
