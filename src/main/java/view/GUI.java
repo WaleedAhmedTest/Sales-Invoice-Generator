@@ -5,6 +5,8 @@ import model.InvoiceHeader;
 import model.InvoiceLine;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -86,7 +88,7 @@ public class GUI extends JFrame{
         createNewInvoiceButton.setBounds(80,400,150,30);
         createNewInvoiceButton.setText("Create New Invoice");
         createNewInvoiceButton.setFocusable(false);
-        createNewInvoiceButton.addActionListener(controller::saveNewInvoice);
+        createNewInvoiceButton.addActionListener(e-> controller.saveNewInvoice());
 
         JButton deleteInvoiceButton = new JButton();
         deleteInvoiceButton.setBounds(250,400,150,30);
@@ -146,7 +148,19 @@ public class GUI extends JFrame{
 
         // Creating Table
         String[] columns = {"No.","Item Name","Item Price","Count","Item Total"};
-        rightTable = new JTable(new DefaultTableModel(columns,0));
+        rightTable = new JTable(new DefaultTableModel(columns,0)){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0 || column == 1 || column == 2 || column == 3;
+            }
+        };
+        rightTable.getModel().addTableModelListener(new TableModelListener() {
+            public void tableChanged(TableModelEvent e) {
+                System.out.println("Table has changed");
+            }
+        });
+        rightTable.putClientProperty("terminateEditOnFocusLost", true);
+        rightTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         rightTable.getTableHeader().setReorderingAllowed(false);
         rightTable.getTableHeader().setResizingAllowed(false);
         rightTable.setShowGrid(true);
@@ -225,6 +239,15 @@ public class GUI extends JFrame{
         }
     }
 
+    // This function creates a new invoice
+    public void createNewInvoice(String invNum){
+        clearRightPanel();
+        invoiceNumLabel.setText(invNum);
+        DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
+        for (int i = 0; i < 10; i++)
+            model.addRow(new Object[]{});
+    }
+
     // This function clears the right panel data
     private void clearRightPanel(){
         DefaultTableModel rightModel = (DefaultTableModel) rightTable.getModel();
@@ -234,4 +257,6 @@ public class GUI extends JFrame{
         dateTextField.setText("");
         customerTextField.setText("");
     }
+
+    // This function updates the right panel total costs when values are changed
 }

@@ -6,7 +6,12 @@ import model.InvoiceLine;
 import view.GUI;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Scanner;
 
 public class Controller {
 
@@ -44,8 +49,8 @@ public class Controller {
     }
 
     // Function which saves newInvoice
-    public void saveNewInvoice(ActionEvent e){
-        //TODO
+    public void saveNewInvoice(){
+        gui.createNewInvoice(getNewInvoiceNumber());
     }
 
     // Function which saves newInvoice
@@ -67,5 +72,26 @@ public class Controller {
                     Double.parseDouble(invoiceLine.getItemPrice());
         }
         return result;
+    }
+
+    // Function which returns a new invoice number
+    private String getNewInvoiceNumber(){
+        String path = "src/main/java/controller/index";
+        int invoiceNumber = -1;
+        try {
+            Scanner sc = new Scanner(new File(path));
+            invoiceNumber = sc.nextInt();
+            sc.close();
+            FileWriter fileWriter = new FileWriter(path);
+            fileWriter.write(Integer.toString(invoiceNumber + 1));
+            fileWriter.close();
+        } catch(FileNotFoundException fileNotFoundException){
+            System.err.println("[ERROR] " + path + " for index is not found...");
+            System.exit(-1);
+        } catch (IOException ioException) {
+            System.err.println("[ERROR] Index file is corrupted...");
+            System.exit(-1);
+        }
+        return ""+invoiceNumber;
     }
 }

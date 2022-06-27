@@ -14,10 +14,6 @@ public class InvoiceHeader {
         this.customerName = customerName;
     }
 
-    public void setInvoiceLines(ArrayList<InvoiceLine> invoiceLines) {
-        this.invoiceLines = invoiceLines;
-    }
-
     public String getInvoiceNum() {
         return invoiceNum;
     }
@@ -44,6 +40,10 @@ public class InvoiceHeader {
 
     public ArrayList<InvoiceLine> getInvoiceLines() {
         return invoiceLines;
+    }
+
+    public void setInvoiceLines(ArrayList<InvoiceLine> invoiceLines) {
+        this.invoiceLines = invoiceLines;
     }
 
     @Override
