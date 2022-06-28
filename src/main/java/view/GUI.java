@@ -180,9 +180,14 @@ public class GUI extends JFrame{
         cancelButton.setText("Cancel");
         cancelButton.setFocusable(false);
         cancelButton.addActionListener(e -> {
-            if (!invoiceNumLabel.getText().equals(""))
-                controller.cancelInstance(invoiceNumLabel.getText());}
-        );
+            if (!invoiceNumLabel.getText().equals("")) {
+                try {
+                    controller.cancelInstance(invoiceNumLabel.getText());
+                }catch (Exception ee){
+                    clearRightPanel();
+                }
+            }
+        });
         // Setting right panel
         JPanel rightPanel = new JPanel();
         rightPanel.setBounds(500, 0, 500, 500);
@@ -273,12 +278,16 @@ public class GUI extends JFrame{
         DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
         Vector<?> vector = model.getDataVector();
         double sum = 0;
-        for (int i = 0 ; i < vector.size() ; i++){
-            List<?> row = (List<?>) vector.get(i);
-            double updatedValue = Double.parseDouble(row.get(2) + "") * Double.parseDouble(row.get(3)+"");
-            model.setValueAt("" + updatedValue , i, 4);
-            sum+=updatedValue;
+        try {
+            for (int i = 0; i < vector.size(); i++) {
+                List<?> row = (List<?>) vector.get(i);
+                double updatedValue = Double.parseDouble(row.get(2) + "") * Double.parseDouble(row.get(3) + "");
+                model.setValueAt("" + updatedValue, i, 4);
+                sum += updatedValue;
+            }
+            invoiceTotalLabel.setText("" + sum);
+        } catch (Exception e){
+            System.err.println("[ERROR] Data entered are wrong. Count and price should be numbers");
         }
-        invoiceTotalLabel.setText("" + sum);
     }
 }
