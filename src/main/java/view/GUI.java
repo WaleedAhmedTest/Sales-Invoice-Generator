@@ -5,8 +5,6 @@ import model.InvoiceHeader;
 import model.InvoiceLine;
 
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.util.*;
 
@@ -91,7 +89,10 @@ public class GUI extends JFrame{
         deleteInvoiceButton.setBounds(250,400,150,30);
         deleteInvoiceButton.setText("Delete Invoice");
         deleteInvoiceButton.setFocusable(false);
-        deleteInvoiceButton.addActionListener(e-> controller.deleteInvoice(invoiceNumLabel.getText()));
+        deleteInvoiceButton.addActionListener(e-> {
+            if (!invoiceNumLabel.getText().equals(""))
+                controller.deleteInvoice(invoiceNumLabel.getText());
+        });
 
         // Setting left panel
         JPanel leftPanel = new JPanel();
@@ -168,7 +169,10 @@ public class GUI extends JFrame{
         saveButton.setBounds(150,400,80,30);
         saveButton.setText("Save");
         saveButton.setFocusable(false);
-        saveButton.addActionListener(e -> saveInvoice());
+        saveButton.addActionListener(e -> {
+            if (!invoiceNumLabel.getText().equals(""))
+              saveInvoice();
+        });
 
         JButton cancelButton = new JButton();
         cancelButton.setBounds(250,400,80,30);
@@ -228,9 +232,10 @@ public class GUI extends JFrame{
     public void createNewInvoice(String invNum){
         clearRightPanel();
         invoiceNumLabel.setText(invNum);
+        invoiceTotalLabel.setText("0.0");
         DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
-        for (int i = 0; i < 10; i++)
-            model.addRow(new Object[]{});
+        for (int i = 0; i <= 20; i++)
+            model.addRow(new Object[]{invNum,"","0","0","0.0"});
     }
 
     // This function clears the right panel data
@@ -245,6 +250,7 @@ public class GUI extends JFrame{
 
     // This function is used to save new invoice
     private void saveInvoice(){
+        updateTotalCost();
         DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
         InvoiceHeader invoiceHeader = new InvoiceHeader(invoiceNumLabel.getText(),
                 dateTextField.getText(),customerTextField.getText());
@@ -252,6 +258,8 @@ public class GUI extends JFrame{
         ArrayList<InvoiceLine> invoiceLines = new ArrayList<>();
         for (Object obj : vector){
             List<?> row = (List<?>) obj;
+            if (row.get(1).equals(""))
+                continue;
             invoiceLines.add(new InvoiceLine((String) row.get(0),
                     (String) row.get(1),(String) row.get(2),(String) row.get(3)));
         }
