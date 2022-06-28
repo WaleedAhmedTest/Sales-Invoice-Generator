@@ -9,31 +9,31 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Scanner;
 
 public class Controller {
 
-    // Array data which contains all the invoices and details
+    // Hashtable data which contains all the invoices' data (Hashtable is used to increase performance)
     private Hashtable<Integer,InvoiceHeader> data;
+    // File operation and gui instances
     private final FileOperations fileOperations;
     private final GUI gui;
 
-    // Initializing the controller
+    // Initializing the controller which initialize also the GUI
     public Controller() {
         this.gui = new GUI(this);
         this.fileOperations = new FileOperations();
         loadFile();
     }
 
-    // Function which loads the data
+    // Function which loads the data from file and save it in memory
     public void loadFile() {
         data = fileOperations.readFile();
         gui.initializeFrame(data);
     }
 
-    // Save function which is called when clicking the Save button
+    // Save function which is called when clicking the Save File button
     public void saveFile(){
         fileOperations.writeFile(data);
     }
@@ -50,12 +50,12 @@ public class Controller {
         showInvoice(invoiceHeader.getInvoiceNum());
     }
 
-    // Function which saves newInvoice
-    public void saveNewInvoice(){
+    // Function which creates new invoice
+    public void createNewInvoice(){
         gui.createNewInvoice(getNewInvoiceNumber());
     }
 
-    // Function which saves newInvoice
+    // Function deletes an invoice from the data
     public void deleteInvoice(String invNum){
         data.remove(Integer.parseInt(invNum));
         gui.initializeFrame(data);
@@ -76,22 +76,7 @@ public class Controller {
         return result;
     }
 
-    // This function calculates the total cost and returns a list with new values
-    public ArrayList<Double> updateTotalCost(String invNum){
-        ArrayList<Double> updatedValues = new ArrayList<>();
-        double sum = 0;
-        InvoiceHeader invoiceHeader = data.get(Integer.parseInt(invNum));
-        for (InvoiceLine invoiceLine : invoiceHeader.getInvoiceLines()){
-            double temp = Double.parseDouble(invoiceLine.getCount()) *
-                    Double.parseDouble(invoiceLine.getItemPrice());
-            updatedValues.add(temp);
-            sum += temp;
-        }
-        updatedValues.add(sum);
-        return updatedValues;
-    }
-
-    // Function which returns a new invoice number
+    // Function which returns a new invoice number (ID)
     private String getNewInvoiceNumber(){
         String path = "src/main/java/controller/index";
         int invoiceNumber = -1;

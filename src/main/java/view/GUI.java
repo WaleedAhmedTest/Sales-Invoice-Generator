@@ -6,7 +6,9 @@ import model.InvoiceLine;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class GUI extends JFrame{
 
@@ -16,7 +18,7 @@ public class GUI extends JFrame{
     private JLabel invoiceNumLabel, invoiceTotalLabel;
     private JTextField dateTextField,customerTextField;
 
-    // GUI constructor
+    // GUI constructor (This constructor initializes and sets-up the JFrame)
     public GUI(Controller controller) {
 
         // Initializing the controller
@@ -47,7 +49,7 @@ public class GUI extends JFrame{
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setVisible(true);
-        this.setLayout(null);
+        this.setLayout(new GridLayout(1,2)); // Setting the grid layout
         this.setJMenuBar(menuBar);
         this.add(leftPanel);
         this.add(rightPanel);
@@ -77,13 +79,12 @@ public class GUI extends JFrame{
         JScrollPane scrollPane = new JScrollPane(leftTable);
         scrollPane.setBounds(20,30,480,360);
 
-
         // Adding buttons
         JButton createNewInvoiceButton = new JButton();
         createNewInvoiceButton.setBounds(80,400,150,30);
         createNewInvoiceButton.setText("Create New Invoice");
         createNewInvoiceButton.setFocusable(false);
-        createNewInvoiceButton.addActionListener(e-> controller.saveNewInvoice());
+        createNewInvoiceButton.addActionListener(e-> controller.createNewInvoice());
 
         JButton deleteInvoiceButton = new JButton();
         deleteInvoiceButton.setBounds(250,400,150,30);
@@ -162,7 +163,7 @@ public class GUI extends JFrame{
         rightTable.getTableHeader().setResizingAllowed(false);
         rightTable.setShowGrid(true);
         JScrollPane scrollPane = new JScrollPane(rightTable);
-        scrollPane.setBounds(20,105,450,285);
+        scrollPane.setBounds(20,105,445,285);
 
         // Creating buttons
         JButton saveButton = new JButton();
@@ -201,7 +202,7 @@ public class GUI extends JFrame{
         return rightPanel;
     }
 
-    // This function initializes the Frame by showing the invoices and clearing the right panel data
+    // This function initializes the Frame by showing the invoices in the invoices table and clearing the right panel data
     public void initializeFrame(Hashtable<Integer,InvoiceHeader> data){
         // Adjusting the left table
         DefaultTableModel leftModel = (DefaultTableModel) leftTable.getModel();
@@ -213,7 +214,7 @@ public class GUI extends JFrame{
         clearRightPanel();
     }
 
-    // This function is used to update the right table with the given invoice lines list
+    // This function is used to update the right table with the given invoiceHeader
     public void updateRightTable(InvoiceHeader invoiceHeader){
         clearRightPanel();
         invoiceNumLabel.setText(invoiceHeader.getInvoiceNum());
@@ -228,7 +229,7 @@ public class GUI extends JFrame{
         }
     }
 
-    // This function creates a new invoice
+    // This function creates a new invoice with empty rows
     public void createNewInvoice(String invNum){
         clearRightPanel();
         invoiceNumLabel.setText(invNum);
@@ -248,7 +249,7 @@ public class GUI extends JFrame{
         customerTextField.setText("");
     }
 
-    // This function is used to save new invoice
+    // This function is used to save invoice, it is called when Save button is pressed
     private void saveInvoice(){
         updateTotalCost();
         DefaultTableModel model = (DefaultTableModel) rightTable.getModel();

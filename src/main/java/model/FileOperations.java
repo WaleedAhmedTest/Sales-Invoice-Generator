@@ -12,13 +12,13 @@ public class FileOperations {
     private final String INVOICE_LINE_PATH;
     private final String INVOICE_HEADER_PATH;
 
-    // Initializing the FileOperations
+    // Initializing the FileOperations class
     public FileOperations() {
         INVOICE_LINE_PATH = "src/main/resources/InvoiceLine.csv";
         INVOICE_HEADER_PATH = "src/main/resources/InvoiceHeader.csv";
     }
 
-    // Function which reads all invoices
+    // Function which reads all invoices and returns the data
     public Hashtable<Integer,InvoiceHeader> readFile() {
         Hashtable<Integer,InvoiceHeader> data = new Hashtable<>();
         // Initializing scanners
@@ -66,7 +66,7 @@ public class FileOperations {
         return data;
     }
 
-    // Function which writes all invoices
+    // Void which writes all invoices
     public void writeFile(Hashtable<Integer,InvoiceHeader> data){
         FileWriter invoiceLineWriter;
         FileWriter invoiceHeaderWriter;
