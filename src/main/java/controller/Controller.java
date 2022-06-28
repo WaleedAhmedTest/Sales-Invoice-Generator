@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 import java.util.Scanner;
 
@@ -45,9 +47,28 @@ public class Controller {
 
     // Function which save the new instance (Called when save button is pressed)
     public void saveInstance(InvoiceHeader invoiceHeader){
+        if (invoiceHeader.getCustomerName().equals("")){
+            System.err.println("[ERROR] Customer name is empty...");
+            return;
+        }
+        if (!checkDateIsValid(invoiceHeader.getInvoiceDate()))
+            return;
         data.put(Integer.parseInt(invoiceHeader.getInvoiceNum()),invoiceHeader);
         gui.initializeFrame(data);
         showInvoice(invoiceHeader.getInvoiceNum());
+    }
+
+    // This function checks if the date format is correct
+    private boolean checkDateIsValid(String date){
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            simpleDateFormat.parse(date);
+        }
+        catch (ParseException e) {
+            System.err.println("[ERROR] Date format entered is wrong. It should be [dd/MM/yyyy]");
+            return false;
+        }
+        return true;
     }
 
     // Function which creates new invoice

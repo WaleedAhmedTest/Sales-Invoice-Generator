@@ -36,8 +36,12 @@ public class FileOperations {
         invoiceLineScanner.nextLine();
         while (invoiceLineScanner.hasNextLine()){
             String[] line = invoiceLineScanner.nextLine().split(",");
-            if(line.length!=4)
-                break;
+            if(line.length!=4) {
+                System.err.println("[ERROR] Input data files are corrupted...");
+                invoiceLineScanner.close();
+                invoiceHeaderScanner.close();
+                System.exit(-1);
+            }
             InvoiceLine invoiceLine = new InvoiceLine(line[0],line[1],line[2],line[3]);
             if (hashtable.containsKey(Integer.parseInt(line[0])))
                 hashtable.get(Integer.parseInt(line[0])).add(invoiceLine);
@@ -53,8 +57,12 @@ public class FileOperations {
         invoiceHeaderScanner.nextLine();
         while (invoiceHeaderScanner.hasNextLine()) {
             String[] line = invoiceHeaderScanner.nextLine().split(",");
-            if(line.length!=3)
-                break;
+            if(line.length!=3){
+                System.err.println("[ERROR] Input data files are corrupted...");
+                invoiceLineScanner.close();
+                invoiceHeaderScanner.close();
+                System.exit(-1);
+            }
             InvoiceHeader invoiceHeader = new InvoiceHeader(line[0],line[1],line[2]);
             if (hashtable.containsKey(Integer.parseInt(line[0])))
                 invoiceHeader.setInvoiceLines(hashtable.get(Integer.parseInt(line[0])));
