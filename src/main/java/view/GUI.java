@@ -301,14 +301,15 @@ public class GUI extends JFrame{
             j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             int r = j.showSaveDialog(null);
             if (r == JFileChooser.APPROVE_OPTION) {
-                controller.saveFile(j.getSelectedFile().getAbsolutePath());
-                JOptionPane.showMessageDialog(this, "Save complete");
+                int status = controller.saveFile(j.getSelectedFile().getAbsolutePath());
+                if (status == 1)
+                    JOptionPane.showMessageDialog(this, "Save complete");
             }
             else
                 JOptionPane.showMessageDialog(this, "The user cancelled the operation");
         }
         else {
-            String invoiceHeaderPath,invoiceLinePath = null;
+            String invoiceHeaderPath,invoiceLinePath;
             j.setDialogTitle("Select InvoiceHeader.csv file");
             j.setMultiSelectionEnabled(true);
             int r = j.showOpenDialog(null);
@@ -324,10 +325,13 @@ public class GUI extends JFrame{
             r = j.showOpenDialog(null);
             if (r == JFileChooser.APPROVE_OPTION)
                 invoiceLinePath = j.getSelectedFile().getAbsolutePath();
-            else
+            else {
                 JOptionPane.showMessageDialog(this, "The user cancelled the operation");
-            controller.loadFile(invoiceLinePath,invoiceHeaderPath);
-            JOptionPane.showMessageDialog(this, "Data loaded successfully");
+                return;
+            }
+            int status = controller.loadFile(invoiceLinePath,invoiceHeaderPath);
+            if (status==1)
+                JOptionPane.showMessageDialog(this, "Data loaded successfully");
         }
     }
 }

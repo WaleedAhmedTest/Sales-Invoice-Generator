@@ -25,9 +25,21 @@ public class FileOperations {
                     "Error",JOptionPane.ERROR_MESSAGE);
             return new Hashtable<>();
         }
-        // Reading all invoice lines
+
+        // Skipping the first line which contains column names
         Hashtable<Integer,ArrayList<InvoiceLine>>hashtable = new Hashtable<>();
-        invoiceLineScanner.nextLine();
+        try {
+            invoiceLineScanner.nextLine();
+            invoiceHeaderScanner.nextLine();
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(frame, "Input data files are corrupted...",
+                    "Error",JOptionPane.ERROR_MESSAGE);
+            invoiceLineScanner.close();
+            invoiceHeaderScanner.close();
+            return new Hashtable<>();
+        }
+
+        // Reading all invoice lines
         while (invoiceLineScanner.hasNextLine()){
             String[] line = invoiceLineScanner.nextLine().split(",");
             if(line.length!=4) {
@@ -49,7 +61,6 @@ public class FileOperations {
         invoiceLineScanner.close();
 
         // Reading all invoice headers
-        invoiceHeaderScanner.nextLine();
         while (invoiceHeaderScanner.hasNextLine()) {
             String[] line = invoiceHeaderScanner.nextLine().split(",");
             if(line.length!=3){
@@ -71,7 +82,7 @@ public class FileOperations {
     }
 
     // Void which writes all invoices
-    public static void writeFile(Hashtable<Integer,InvoiceHeader> data,String path,JFrame frame){
+    public static int writeFile(Hashtable<Integer,InvoiceHeader> data,String path,JFrame frame){
         FileWriter invoiceLineWriter;
         FileWriter invoiceHeaderWriter;
         try {
@@ -100,6 +111,8 @@ public class FileOperations {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame, "Output files path is corrupted...",
                     "Error",JOptionPane.ERROR_MESSAGE);
+            return -1;
         }
+        return 1;
     }
 }

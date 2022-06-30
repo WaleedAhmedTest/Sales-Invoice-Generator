@@ -28,15 +28,17 @@ public class Controller {
     }
 
     // Function which loads the data from file and save it in memory
-    public void loadFile(String invoiceLinePath, String invoiceHeaderPath) {
+    public int loadFile(String invoiceLinePath, String invoiceHeaderPath) {
         data = FileOperations.readFile(invoiceLinePath,invoiceHeaderPath,gui);
         gui.initializeFrame(data);
+        if (data.isEmpty())
+            return -1;
+        else
+            return 1;
     }
 
     // Save function which is called when clicking the Save File button
-    public void saveFile(String path){
-        FileOperations.writeFile(data,path,gui);
-    }
+    public int saveFile(String path){return FileOperations.writeFile(data,path,gui); }
 
     // Cancel function which is called when clicking the Cancel button
     public void cancelInstance(String invNum){
