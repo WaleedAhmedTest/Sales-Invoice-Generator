@@ -18,26 +18,24 @@ public class Controller {
 
     // Hashtable data which contains all the invoices' data (Hashtable is used to increase performance)
     private Hashtable<Integer,InvoiceHeader> data;
-    // File operation and gui instances
-    private final FileOperations fileOperations;
+    // GUI instance
     private final GUI gui;
 
     // Initializing the controller which initialize also the GUI
     public Controller() {
         this.gui = new GUI(this);
-        this.fileOperations = new FileOperations();
-        loadFile();
+        loadFile("src/main/resources/InvoiceLine.csv","src/main/resources/InvoiceHeader.csv");
     }
 
     // Function which loads the data from file and save it in memory
-    public void loadFile() {
-        data = fileOperations.readFile();
+    public void loadFile(String invoiceLinePath, String invoiceHeaderPath) {
+        data = FileOperations.readFile(invoiceLinePath,invoiceHeaderPath,gui);
         gui.initializeFrame(data);
     }
 
     // Save function which is called when clicking the Save File button
-    public void saveFile(){
-        fileOperations.writeFile(data);
+    public void saveFile(String path){
+        FileOperations.writeFile(data,path,gui);
     }
 
     // Cancel function which is called when clicking the Cancel button

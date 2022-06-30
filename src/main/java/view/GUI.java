@@ -5,6 +5,7 @@ import model.InvoiceHeader;
 import model.InvoiceLine;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.*;
@@ -32,9 +33,9 @@ public class GUI extends JFrame{
         JMenuBar menuBar = new JMenuBar();
         JMenu fileBar = new JMenu("File");
         JMenuItem loadMenuItem = new JMenuItem("Load File");
-        loadMenuItem.addActionListener(e -> controller.loadFile());
+        loadMenuItem.addActionListener(e -> saveAndLoadFiles("load"));
         JMenuItem saveMenuItem = new JMenuItem("Save File");
-        saveMenuItem.addActionListener(e -> controller.saveFile());
+        saveMenuItem.addActionListener(e -> saveAndLoadFiles("save"));
         fileBar.add(loadMenuItem);
         fileBar.add(saveMenuItem);
         menuBar.add(fileBar);
@@ -271,6 +272,7 @@ public class GUI extends JFrame{
         }
         invoiceHeader.setInvoiceLines(invoiceLines);
         controller.saveInstance(invoiceHeader);
+        JOptionPane.showMessageDialog(this, "Invoice saved");
     }
 
     // This function updates the right panel total costs when values are changed
@@ -287,7 +289,45 @@ public class GUI extends JFrame{
             }
             invoiceTotalLabel.setText("" + sum);
         } catch (Exception e){
-            System.err.println("[ERROR] Data entered are wrong. Count and price should be numbers");
+            JOptionPane.showMessageDialog(this, "Data entered is wrong. Count and price should be numbers",
+                    "Error",JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void saveAndLoadFiles(String mode){
+        JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        if (mode.equals("save")) {
+            j.setDialogTitle("Select directory to save InvoiceHeader.csv and InvoiceLine.csv");
+            j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int r = j.showSaveDialog(null);
+            if (r == JFileChooser.APPROVE_OPTION) {
+                controller.saveFile(j.getSelectedFile().getAbsolutePath());
+                JOptionPane.showMessageDialog(this, "Save complete");
+            }
+            else
+                JOptionPane.showMessageDialog(this, "The user cancelled the operation");
+        }
+        else {
+            String invoiceHeaderPath,invoiceLinePath = null;
+            j.setDialogTitle("Select InvoiceHeader.csv file");
+            j.setMultiSelectionEnabled(true);
+            int r = j.showOpenDialog(null);
+            if (r == JFileChooser.APPROVE_OPTION)
+                invoiceHeaderPath = j.getSelectedFile().getAbsolutePath();
+            else {
+                JOptionPane.showMessageDialog(this, "The user cancelled the operation");
+                return;
+            }
+            j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            j.setDialogTitle("Select InvoiceLine.csv file");
+            j.setMultiSelectionEnabled(true);
+            r = j.showOpenDialog(null);
+            if (r == JFileChooser.APPROVE_OPTION)
+                invoiceLinePath = j.getSelectedFile().getAbsolutePath();
+            else
+                JOptionPane.showMessageDialog(this, "The user cancelled the operation");
+            controller.loadFile(invoiceLinePath,invoiceHeaderPath);
+            JOptionPane.showMessageDialog(this, "Data loaded successfully");
         }
     }
 }

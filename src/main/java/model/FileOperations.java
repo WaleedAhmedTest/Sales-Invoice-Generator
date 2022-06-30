@@ -1,5 +1,6 @@
 package model;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -9,27 +10,20 @@ import java.util.Scanner;
 
 public class FileOperations {
 
-    private final String INVOICE_LINE_PATH;
-    private final String INVOICE_HEADER_PATH;
-
-    // Initializing the FileOperations class
-    public FileOperations() {
-        INVOICE_LINE_PATH = "src/main/resources/InvoiceLine.csv";
-        INVOICE_HEADER_PATH = "src/main/resources/InvoiceHeader.csv";
-    }
 
     // Function which reads all invoices and returns the data
-    public Hashtable<Integer,InvoiceHeader> readFile() {
+    public static Hashtable<Integer,InvoiceHeader> readFile(String invoiceLinePath,String invoiceHeaderPath, JFrame frame) {
         Hashtable<Integer,InvoiceHeader> data = new Hashtable<>();
         // Initializing scanners
-        Scanner invoiceLineScanner = null;
-        Scanner invoiceHeaderScanner = null;
+        Scanner invoiceLineScanner;
+        Scanner invoiceHeaderScanner;
         try{
-            invoiceLineScanner = new Scanner(new File(INVOICE_LINE_PATH));
-            invoiceHeaderScanner = new Scanner(new File(INVOICE_HEADER_PATH));
+            invoiceLineScanner = new Scanner(new File(invoiceLinePath));
+            invoiceHeaderScanner = new Scanner(new File(invoiceHeaderPath));
         }catch (FileNotFoundException e){
-            System.err.println("[ERROR] Input files are missing...");
-            System.exit(-1);
+            JOptionPane.showMessageDialog(frame, "Input files are missing...",
+                    "Error",JOptionPane.ERROR_MESSAGE);
+            return new Hashtable<>();
         }
         // Reading all invoice lines
         Hashtable<Integer,ArrayList<InvoiceLine>>hashtable = new Hashtable<>();
@@ -37,10 +31,11 @@ public class FileOperations {
         while (invoiceLineScanner.hasNextLine()){
             String[] line = invoiceLineScanner.nextLine().split(",");
             if(line.length!=4) {
-                System.err.println("[ERROR] Input data files are corrupted...");
+                JOptionPane.showMessageDialog(frame, "Input data files are corrupted...",
+                        "Error",JOptionPane.ERROR_MESSAGE);
                 invoiceLineScanner.close();
                 invoiceHeaderScanner.close();
-                System.exit(-1);
+                return new Hashtable<>();
             }
             InvoiceLine invoiceLine = new InvoiceLine(line[0],line[1],line[2],line[3]);
             if (hashtable.containsKey(Integer.parseInt(line[0])))
@@ -58,10 +53,11 @@ public class FileOperations {
         while (invoiceHeaderScanner.hasNextLine()) {
             String[] line = invoiceHeaderScanner.nextLine().split(",");
             if(line.length!=3){
-                System.err.println("[ERROR] Input data files are corrupted...");
+                JOptionPane.showMessageDialog(frame, "Input data files are corrupted...",
+                        "Error",JOptionPane.ERROR_MESSAGE);
                 invoiceLineScanner.close();
                 invoiceHeaderScanner.close();
-                System.exit(-1);
+                return new Hashtable<>();
             }
             InvoiceHeader invoiceHeader = new InvoiceHeader(line[0],line[1],line[2]);
             if (hashtable.containsKey(Integer.parseInt(line[0])))
@@ -75,13 +71,13 @@ public class FileOperations {
     }
 
     // Void which writes all invoices
-    public void writeFile(Hashtable<Integer,InvoiceHeader> data){
+    public static void writeFile(Hashtable<Integer,InvoiceHeader> data,String path,JFrame frame){
         FileWriter invoiceLineWriter;
         FileWriter invoiceHeaderWriter;
         try {
             // Initializing writers
-            invoiceLineWriter = new FileWriter(INVOICE_LINE_PATH);
-            invoiceHeaderWriter = new FileWriter(INVOICE_HEADER_PATH);
+            invoiceLineWriter = new FileWriter(path + "\\InvoiceLine.csv");
+            invoiceHeaderWriter = new FileWriter(path + "\\InvoiceHeader.csv");
             invoiceLineWriter.write("invoiceNum,itemName,itemPrice,Count\n");
             invoiceHeaderWriter.write("invoiceNum,invoiceDate,CustomerName\n");
 
@@ -102,8 +98,8 @@ public class FileOperations {
             invoiceLineWriter.close();
             invoiceHeaderWriter.close();
         } catch (Exception e) {
-            System.err.println("[ERROR] Output files path is corrupted...");
-            System.exit(-1);
+            JOptionPane.showMessageDialog(frame, "Output files path is corrupted...",
+                    "Error",JOptionPane.ERROR_MESSAGE);
         }
     }
 }
