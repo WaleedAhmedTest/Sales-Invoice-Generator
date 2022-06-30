@@ -5,6 +5,7 @@ import model.InvoiceHeader;
 import model.InvoiceLine;
 import view.GUI;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -46,34 +47,32 @@ public class Controller {
     }
 
     // Function which save the new instance (Called when save button is pressed)
-    public void saveInstance(InvoiceHeader invoiceHeader){
+    public int saveInstance(InvoiceHeader invoiceHeader, JFrame frame){
         if (invoiceHeader.getCustomerName().equals("")){
-            System.err.println("[ERROR] Customer name is empty...");
-            return;
+            JOptionPane.showMessageDialog(frame, "Customer name is empty...",
+                    "Error",JOptionPane.ERROR_MESSAGE);
+            return -1;
         }
-        if (!checkDateIsValid(invoiceHeader.getInvoiceDate()))
-            return;
+        if (!checkDateIsValid(invoiceHeader.getInvoiceDate(),frame))
+            return -1;
         data.put(Integer.parseInt(invoiceHeader.getInvoiceNum()),invoiceHeader);
         gui.initializeFrame(data);
         showInvoice(invoiceHeader.getInvoiceNum());
+        return 1;
     }
 
     // This function checks if the date format is correct
-    private boolean checkDateIsValid(String date){
+    private boolean checkDateIsValid(String date, JFrame frame){
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
             simpleDateFormat.parse(date);
         }
         catch (ParseException e) {
-            System.err.println("[ERROR] Date format entered is wrong. It should be [dd/MM/yyyy]");
+            JOptionPane.showMessageDialog(frame, "Date format entered is wrong. It should be [dd/MM/yyyy]",
+                    "Error",JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
-    }
-
-    // Function which creates new invoice
-    public void createNewInvoice(){
-        gui.createNewInvoice(getNewInvoiceNumber());
     }
 
     // Function deletes an invoice from the data
@@ -98,7 +97,7 @@ public class Controller {
     }
 
     // Function which returns a new invoice number (ID)
-    private String getNewInvoiceNumber(){
+    public String getNewInvoiceNumber(){
         String path = "src/main/java/controller/index";
         int invoiceNumber = -1;
         try {
@@ -109,10 +108,12 @@ public class Controller {
             fileWriter.write(Integer.toString(invoiceNumber + 1));
             fileWriter.close();
         } catch(FileNotFoundException fileNotFoundException){
-            System.err.println("[ERROR] " + path + " for index is not found...");
+            JOptionPane.showMessageDialog(gui, "[ERROR] " + path + " for index is not found...",
+                    "Error",JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
         } catch (IOException ioException) {
-            System.err.println("[ERROR] Index file is corrupted...");
+            JOptionPane.showMessageDialog(gui, "[ERROR] Index file is corrupted...",
+                    "Error",JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
         }
         return ""+invoiceNumber;

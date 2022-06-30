@@ -85,7 +85,7 @@ public class GUI extends JFrame{
         createNewInvoiceButton.setBounds(80,400,150,30);
         createNewInvoiceButton.setText("Create New Invoice");
         createNewInvoiceButton.setFocusable(false);
-        createNewInvoiceButton.addActionListener(e-> controller.createNewInvoice());
+        createNewInvoiceButton.addActionListener(e-> createNewInvoice());
 
         JButton deleteInvoiceButton = new JButton();
         deleteInvoiceButton.setBounds(250,400,150,30);
@@ -156,7 +156,7 @@ public class GUI extends JFrame{
         };
         rightTable.getSelectionModel().addListSelectionListener(event -> {
             if (event.getValueIsAdjusting())
-                updateTotalCost();
+                GUI.updateTotalCost(rightTable,invoiceTotalLabel,this);
         });
         rightTable.putClientProperty("terminateEditOnFocusLost", true);
         rightTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -236,13 +236,8 @@ public class GUI extends JFrame{
     }
 
     // This function creates a new invoice with empty rows
-    public void createNewInvoice(String invNum){
-        clearRightPanel();
-        invoiceNumLabel.setText(invNum);
-        invoiceTotalLabel.setText("0.0");
-        DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
-        for (int i = 0; i <= 20; i++)
-            model.addRow(new Object[]{invNum,"","0","0","0.0"});
+    public void createNewInvoice(){
+        new NewInvoiceFrame(controller.getNewInvoiceNumber(),this, controller);
     }
 
     // This function clears the right panel data
@@ -257,10 +252,17 @@ public class GUI extends JFrame{
 
     // This function is used to save invoice, it is called when Save button is pressed
     private void saveInvoice(){
-        updateTotalCost();
+        updateTotalCost(rightTable,invoiceTotalLabel,this);
         DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
         InvoiceHeader invoiceHeader = new InvoiceHeader(invoiceNumLabel.getText(),
                 dateTextField.getText(),customerTextField.getText());
+        getTableData(model, invoiceHeader);
+        controller.saveInstance(invoiceHeader,this);
+        JOptionPane.showMessageDialog(this, "Invoice saved");
+    }
+
+    // This function gets the table data
+    public static void getTableData(DefaultTableModel model, InvoiceHeader invoiceHeader) {
         Vector<?> vector = model.getDataVector();
         ArrayList<InvoiceLine> invoiceLines = new ArrayList<>();
         for (Object obj : vector){
@@ -271,13 +273,11 @@ public class GUI extends JFrame{
                     (String) row.get(1),(String) row.get(2),(String) row.get(3)));
         }
         invoiceHeader.setInvoiceLines(invoiceLines);
-        controller.saveInstance(invoiceHeader);
-        JOptionPane.showMessageDialog(this, "Invoice saved");
     }
 
-    // This function updates the right panel total costs when values are changed
-    private void updateTotalCost(){
-        DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
+    // This function updates the total coses when values are changed
+    public static void updateTotalCost(JTable table,JLabel invoiceTotalLabel, JFrame frame){
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
         Vector<?> vector = model.getDataVector();
         double sum = 0;
         try {
@@ -289,11 +289,12 @@ public class GUI extends JFrame{
             }
             invoiceTotalLabel.setText("" + sum);
         } catch (Exception e){
-            JOptionPane.showMessageDialog(this, "Data entered is wrong. Count and price should be numbers",
+            JOptionPane.showMessageDialog(frame, "Data entered is wrong. Count and price should be numbers",
                     "Error",JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    // This function is called when save file or load file are pressed
     private void saveAndLoadFiles(String mode){
         JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         if (mode.equals("save")) {
