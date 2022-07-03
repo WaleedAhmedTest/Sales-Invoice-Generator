@@ -41,10 +41,6 @@ public class Controller {
     // Save function which is called when clicking the Save File button
     public int saveFile(String path){return FileOperations.writeFile(data,path,gui); }
 
-    // Cancel function which is called when clicking the Cancel button
-    public void cancelInstance(String invNum){
-        gui.updateRightTable(data.get(Integer.parseInt(invNum)));
-    }
 
     // Function which save the new instance (Called when save button is pressed)
     public int saveInstance(InvoiceHeader invoiceHeader, JFrame frame){
@@ -73,6 +69,13 @@ public class Controller {
             return false;
         }
         return true;
+    }
+
+    // This function adds a new item to a certain invoice =
+    public void saveItem(Integer invNum,InvoiceLine invoiceLine){
+        data.get(invNum).getInvoiceLines().add(invoiceLine);
+        gui.initializeFrame(data);
+        showInvoice("" + invNum);
     }
 
     // Function deletes an invoice from the data

@@ -92,8 +92,12 @@ public class GUI extends JFrame{
         deleteInvoiceButton.setText("Delete Invoice");
         deleteInvoiceButton.setFocusable(false);
         deleteInvoiceButton.addActionListener(e-> {
-            if (!invoiceNumLabel.getText().equals(""))
+            if (!invoiceNumLabel.getText().equals("")) {
                 controller.deleteInvoice(invoiceNumLabel.getText());
+                JOptionPane.showMessageDialog(this, "Selected invoice is deleted.");
+            }else
+                JOptionPane.showMessageDialog(this, "You haven't selected any item to delete !",
+                        "Error",JOptionPane.ERROR_MESSAGE);
         });
 
         // Setting left panel
@@ -167,26 +171,29 @@ public class GUI extends JFrame{
         scrollPane.setBounds(20,105,445,285);
 
         // Creating buttons
-        JButton saveButton = new JButton();
-        saveButton.setBounds(150,400,80,30);
-        saveButton.setText("Save");
-        saveButton.setFocusable(false);
-        saveButton.addActionListener(e -> {
-            if (!invoiceNumLabel.getText().equals(""))
-              saveInvoice();
-        });
+        JButton addNewItemButton = new JButton();
+        addNewItemButton.setBounds(100,400,130,30);
+        addNewItemButton.setText("Add new item");
+        addNewItemButton.setFocusable(false);
+        addNewItemButton.addActionListener(e -> addNewItem());
 
-        JButton cancelButton = new JButton();
-        cancelButton.setBounds(250,400,80,30);
-        cancelButton.setText("Cancel");
-        cancelButton.setFocusable(false);
-        cancelButton.addActionListener(e -> {
-            if (!invoiceNumLabel.getText().equals("")) {
-                try {
-                    controller.cancelInstance(invoiceNumLabel.getText());
-                }catch (Exception ee){
-                    clearRightPanel();
-                }
+        JButton deleteItemButton = new JButton();
+        deleteItemButton.setBounds(250,400,130,30);
+        deleteItemButton.setText("Delete item");
+        deleteItemButton.setFocusable(false);
+        deleteItemButton.addActionListener(e -> {
+            try{
+                if (!invoiceNumLabel.getText().equals("")) {
+                    DefaultTableModel model = (DefaultTableModel) rightTable.getModel();
+                    model.removeRow(rightTable.getSelectedRow());
+                    saveInvoice();
+                    JOptionPane.showMessageDialog(this, "Selected item is deleted.");
+                }else
+                    JOptionPane.showMessageDialog(this, "You haven't selected any invoice to delete from !",
+                            "Error",JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ee){
+                JOptionPane.showMessageDialog(this, "You haven't selected any item to delete !",
+                        "Error",JOptionPane.ERROR_MESSAGE);
             }
         });
         // Setting right panel
@@ -202,8 +209,8 @@ public class GUI extends JFrame{
         rightPanel.add(label3);
         rightPanel.add(invoiceTotalLabel);
         rightPanel.add(label4);
-        rightPanel.add(saveButton);
-        rightPanel.add(cancelButton);
+        rightPanel.add(addNewItemButton);
+        rightPanel.add(deleteItemButton);
         rightPanel.add(scrollPane);
         return rightPanel;
     }
@@ -235,6 +242,15 @@ public class GUI extends JFrame{
         }
     }
 
+    // This function adds new item in an invoice
+    private void addNewItem(){
+        if(!invoiceNumLabel.getText().equals("")){
+            new NewItemFrame(invoiceNumLabel.getText(),this,controller);
+        }else
+            JOptionPane.showMessageDialog(this, "You haven't selected any invoice to add item to !",
+                    "Error",JOptionPane.ERROR_MESSAGE);
+    }
+
     // This function creates a new invoice with empty rows
     public void createNewInvoice(){
         new NewInvoiceFrame(controller.getNewInvoiceNumber(),this, controller);
@@ -258,7 +274,6 @@ public class GUI extends JFrame{
                 dateTextField.getText(),customerTextField.getText());
         getTableData(model, invoiceHeader);
         controller.saveInstance(invoiceHeader,this);
-        JOptionPane.showMessageDialog(this, "Invoice saved");
     }
 
     // This function gets the table data
